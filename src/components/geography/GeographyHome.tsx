@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Play } from 'lucide-react';
-import { GEOGRAPHY_GAMES } from '../../data/geographyData';
+import { GEOGRAPHY_GAMES, preloadAllFlags } from '../../data/geographyData';
 import type { GeographyGameMeta } from '../../data/geographyData';
 import { GameSetupModal } from './GameSetupModal';
 import type { GameSetupConfig } from './GameSetupModal';
@@ -8,6 +8,10 @@ import { GeographyGameEngine } from './GeographyGameEngine';
 import { sounds } from '../../services/audio';
 
 export const GeographyHome: React.FC = () => {
+  useEffect(() => {
+    preloadAllFlags();
+  }, []);
+
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [selectedSetupGame, setSelectedSetupGame] = useState<GeographyGameMeta | null>(null);
   const [activeGameSession, setActiveGameSession] = useState<{

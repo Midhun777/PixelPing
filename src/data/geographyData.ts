@@ -224,6 +224,18 @@ export const COUNTRIES: CountryData[] = [
 ];
 
 /**
+ * Preload all flag images into browser cache for instant rendering
+ */
+export function preloadAllFlags(): void {
+  if (typeof window === 'undefined') return;
+  COUNTRIES.forEach((c) => {
+    const img = new Image();
+    const code = (c.iso2 || c.id).toLowerCase();
+    img.src = `https://flagcdn.com/w320/${code}.png`;
+  });
+}
+
+/**
  * Smart Believable Distractor Generator
  * Pulls wrong choices from the same continent/region so options are believable
  */
