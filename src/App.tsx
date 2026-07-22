@@ -1,14 +1,7 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { BackgroundCanvas } from './components/BackgroundCanvas';
-import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
-import { FeaturedGame } from './components/FeaturedGame';
-import { CategoryFilter } from './components/CategoryFilter';
-import type { CategoryType } from './components/CategoryFilter';
-import { SearchBar } from './components/SearchBar';
 import { GameGrid } from './components/GameGrid';
-import { SurpriseSection } from './components/SurpriseSection';
-import { Footer } from './components/Footer';
 import { GameModal } from './components/GameModal';
 import { GAMES_DATA } from './data/gamesData';
 import type { GameItem } from './data/gamesData';
@@ -49,24 +42,6 @@ function App() {
     });
   };
 
-  // Filter & Search states
-  const [activeCategory, setActiveCategory] = useState<CategoryType>('All');
-  const [searchQuery, setSearchQuery] = useState<string>('');
-
-  // Filtered games calculation
-  const filteredGames = useMemo(() => {
-    return GAMES_DATA.filter((game) => {
-      const matchesSearch =
-        game.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        game.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        game.category.toLowerCase().includes(searchQuery.toLowerCase());
-
-      if (!matchesSearch) return false;
-      if (activeCategory === 'All') return true;
-      return game.category === activeCategory;
-    });
-  }, [activeCategory, searchQuery]);
-
   // Game Modal State
   const [activeModalGame, setActiveModalGame] = useState<GameItem | null>(null);
 
@@ -83,63 +58,31 @@ function App() {
     setActiveModalGame(randomGame);
   };
 
-  const scrollToGames = () => {
-    const el = document.getElementById('games');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
-    <div className="relative min-h-screen flex flex-col selection:bg-[#5B7FFF]/20 selection:text-[#5B7FFF]">
+    <div className="relative min-h-screen flex flex-col selection:bg-[#5B7FFF]/20 selection:text-[#5B7FFF] pb-12">
       {/* Dynamic Animated Particle Grid Canvas */}
       <BackgroundCanvas isDark={isDark} />
 
-      {/* Floating Sticky Glass Header */}
-      <Navbar isDark={isDark} onToggleTheme={toggleTheme} onRandomClick={handleRandomGame} />
-
       {/* Main Content Area */}
       <main className="flex-grow z-10">
-        {/* Hero Section with Floating Shapes & Interactive Reflex Test */}
+        {/* Playful PIXEL PING Header Title & Quick Controls */}
         <HeroSection
-          onExploreClick={scrollToGames}
+          onExploreClick={() => {}}
           onRandomClick={handleRandomGame}
           onLaunchGame={handleLaunchGame}
+          isDark={isDark}
+          onToggleTheme={toggleTheme}
         />
 
-        {/* Featured Spotlight Card */}
-        <FeaturedGame
-          isFavorite={favorites.includes('memory')}
-          onToggleFavorite={toggleFavorite}
-          onPlayGame={handleLaunchGame}
-        />
-
-        {/* Category Scrollable Chips */}
-        <CategoryFilter activeCategory={activeCategory} onSelectCategory={setActiveCategory} />
-
-        {/* Search Bar */}
-        <SearchBar
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          resultCount={filteredGames.length}
-        />
-
-        {/* Responsive Mini Games Grid */}
+        {/* Game Cards Grid */}
         <GameGrid
-          games={filteredGames}
+          games={GAMES_DATA}
           favorites={favorites}
           onToggleFavorite={toggleFavorite}
           onPlayGame={handleLaunchGame}
-          onResetFilters={() => {
-            setActiveCategory('All');
-            setSearchQuery('');
-          }}
+          onResetFilters={() => {}}
         />
-
-        {/* Surprise Me Dice Wheel Section */}
-        <SurpriseSection onSpinDice={handleRandomGame} />
       </main>
-
-      {/* Minimal Footer */}
-      <Footer isDark={isDark} onToggleTheme={toggleTheme} />
 
       {/* Interactive Mini-Game Modal */}
       <GameModal game={activeModalGame} onClose={() => setActiveModalGame(null)} />
