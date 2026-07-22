@@ -25,6 +25,29 @@ interface QuestionItem {
   displayElement?: React.ReactNode;
 }
 
+export const CountryFlagImage: React.FC<{ countryId: string; flagEmoji: string; className?: string }> = ({
+  countryId,
+  flagEmoji,
+  className = 'w-24 h-16 sm:w-32 sm:h-20 object-cover rounded-xl shadow-lg border border-white/20',
+}) => {
+  const [useFallback, setUseFallback] = useState(false);
+  const flagCode = countryId.toLowerCase();
+  const cdnUrl = `https://flagcdn.com/w320/${flagCode}.png`;
+
+  if (useFallback) {
+    return <span className="text-6xl select-none">{flagEmoji}</span>;
+  }
+
+  return (
+    <img
+      src={cdnUrl}
+      alt="Flag"
+      onError={() => setUseFallback(true)}
+      className={className}
+    />
+  );
+};
+
 export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
   game,
   config,
@@ -72,20 +95,20 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           correctAnswer: randomCountry.name,
           options,
           targetCountry: randomCountry,
-          displayElement: <span className="text-7xl sm:text-8xl drop-shadow-md select-none">{randomCountry.flag}</span>,
+          displayElement: <CountryFlagImage countryId={randomCountry.id} flagEmoji={randomCountry.flag} />,
         };
       }
 
       if (mode === 'flag_country') {
-        const distractors = getSmartDistractors(randomCountry, pool, (c) => c.flag, 3);
-        const options = [...distractors, randomCountry.flag].sort(() => 0.5 - Math.random());
+        const distractors = getSmartDistractors(randomCountry, pool, (c) => c.name, 3);
+        const options = [...distractors, randomCountry.name].sort(() => 0.5 - Math.random());
         return {
           type: 'flag_country',
-          prompt: `Select the correct flag for ${randomCountry.name}`,
-          correctAnswer: randomCountry.flag,
+          prompt: `Select the country that belongs to this flag`,
+          correctAnswer: randomCountry.name,
           options,
           targetCountry: randomCountry,
-          displayElement: <span className="font-display font-extrabold text-2xl text-white">{randomCountry.name}</span>,
+          displayElement: <CountryFlagImage countryId={randomCountry.id} flagEmoji={randomCountry.flag} />,
         };
       }
 
@@ -99,9 +122,9 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           options,
           targetCountry: randomCountry,
           displayElement: (
-            <div className="flex items-center gap-3">
-              <span className="text-5xl">{randomCountry.flag}</span>
-              <span className="font-display font-extrabold text-3xl text-white">{randomCountry.name}</span>
+            <div className="flex items-center gap-4">
+              <CountryFlagImage countryId={randomCountry.id} flagEmoji={randomCountry.flag} className="w-16 h-11 object-cover rounded-lg shadow" />
+              <span className="font-display font-extrabold text-2xl text-white">{randomCountry.name}</span>
             </div>
           ),
         };
@@ -153,12 +176,12 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           secondaryCountry: otherCountry,
           displayElement: (
             <div className="grid grid-cols-2 gap-4 w-full">
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center">
-                <span className="text-4xl mb-1">{randomCountry.flag}</span>
+              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center gap-2">
+                <CountryFlagImage countryId={randomCountry.id} flagEmoji={randomCountry.flag} className="w-14 h-9 object-cover rounded-md shadow" />
                 <span className="font-bold text-sm text-white">{randomCountry.name}</span>
               </div>
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center">
-                <span className="text-4xl mb-1">{otherCountry.flag}</span>
+              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center gap-2">
+                <CountryFlagImage countryId={otherCountry.id} flagEmoji={otherCountry.flag} className="w-14 h-9 object-cover rounded-md shadow" />
                 <span className="font-bold text-sm text-white">{otherCountry.name}</span>
               </div>
             </div>
@@ -176,7 +199,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
         targetCountry: randomCountry,
         displayElement: (
           <div className="flex items-center gap-3">
-            <span className="text-5xl">{randomCountry.flag}</span>
+            <CountryFlagImage countryId={randomCountry.id} flagEmoji={randomCountry.flag} className="w-16 h-11 object-cover rounded-lg shadow" />
             <span className="font-display font-extrabold text-2xl text-white">{randomCountry.name}</span>
           </div>
         ),
@@ -320,7 +343,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
       </div>
 
       {/* Main Question Display Box */}
-      <div className="flex flex-col items-center justify-center text-center my-6 min-h-[160px] p-6 rounded-3xl bg-white/5 border border-white/10 relative">
+      <div className="flex flex-col items-center justify-center text-center my-6 min-h-[170px] p-6 rounded-3xl bg-white/5 border border-white/10 relative">
         <h3 className="font-display font-bold text-lg text-slate-200 mb-4">{currentQuestion.prompt}</h3>
         {currentQuestion.displayElement}
       </div>
@@ -368,7 +391,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
               type="text"
               value={typedInput}
               onChange={(e) => setTypedInput(e.target.value)}
-              placeholder="Type your answer here..."
+              placeholder="Type country name here..."
               disabled={feedbackState !== 'none'}
               autoFocus
               className="w-full bg-slate-800 text-white placeholder-slate-500 rounded-2xl p-4 pr-12 text-base font-bold border border-white/20 focus:outline-none focus:border-[#5B7FFF]"
