@@ -25,23 +25,22 @@ interface QuestionItem {
   displayElement?: React.ReactNode;
 }
 
-export const CountryFlagImage: React.FC<{ countryId: string; flagEmoji: string; className?: string }> = ({
-  countryId,
-  flagEmoji,
-  className = 'w-24 h-16 sm:w-32 sm:h-20 object-cover rounded-xl shadow-lg border border-white/20',
+export const CountryFlagImage: React.FC<{ country: CountryData; className?: string }> = ({
+  country,
+  className = 'w-28 h-18 sm:w-36 sm:h-24 object-cover rounded-2xl shadow-xl border-2 border-white/20',
 }) => {
   const [useFallback, setUseFallback] = useState(false);
-  const flagCode = countryId.toLowerCase();
+  const flagCode = (country.iso2 || country.id).toLowerCase();
   const cdnUrl = `https://flagcdn.com/w320/${flagCode}.png`;
 
   if (useFallback) {
-    return <span className="text-6xl select-none">{flagEmoji}</span>;
+    return <span className="text-6xl select-none">{country.flag}</span>;
   }
 
   return (
     <img
       src={cdnUrl}
-      alt="Flag"
+      alt={`${country.name} Flag`}
       onError={() => setUseFallback(true)}
       className={className}
     />
@@ -95,7 +94,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           correctAnswer: randomCountry.name,
           options,
           targetCountry: randomCountry,
-          displayElement: <CountryFlagImage countryId={randomCountry.id} flagEmoji={randomCountry.flag} />,
+          displayElement: <CountryFlagImage country={randomCountry} />,
         };
       }
 
@@ -108,7 +107,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           correctAnswer: randomCountry.name,
           options,
           targetCountry: randomCountry,
-          displayElement: <CountryFlagImage countryId={randomCountry.id} flagEmoji={randomCountry.flag} />,
+          displayElement: <CountryFlagImage country={randomCountry} />,
         };
       }
 
@@ -123,7 +122,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           targetCountry: randomCountry,
           displayElement: (
             <div className="flex items-center gap-4">
-              <CountryFlagImage countryId={randomCountry.id} flagEmoji={randomCountry.flag} className="w-16 h-11 object-cover rounded-lg shadow" />
+              <CountryFlagImage country={randomCountry} className="w-16 h-11 object-cover rounded-lg shadow" />
               <span className="font-display font-extrabold text-2xl text-white">{randomCountry.name}</span>
             </div>
           ),
@@ -177,11 +176,11 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           displayElement: (
             <div className="grid grid-cols-2 gap-4 w-full">
               <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center gap-2">
-                <CountryFlagImage countryId={randomCountry.id} flagEmoji={randomCountry.flag} className="w-14 h-9 object-cover rounded-md shadow" />
+                <CountryFlagImage country={randomCountry} className="w-14 h-9 object-cover rounded-md shadow" />
                 <span className="font-bold text-sm text-white">{randomCountry.name}</span>
               </div>
               <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center gap-2">
-                <CountryFlagImage countryId={otherCountry.id} flagEmoji={otherCountry.flag} className="w-14 h-9 object-cover rounded-md shadow" />
+                <CountryFlagImage country={otherCountry} className="w-14 h-9 object-cover rounded-md shadow" />
                 <span className="font-bold text-sm text-white">{otherCountry.name}</span>
               </div>
             </div>
@@ -199,7 +198,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
         targetCountry: randomCountry,
         displayElement: (
           <div className="flex items-center gap-3">
-            <CountryFlagImage countryId={randomCountry.id} flagEmoji={randomCountry.flag} className="w-16 h-11 object-cover rounded-lg shadow" />
+            <CountryFlagImage country={randomCountry} className="w-16 h-11 object-cover rounded-lg shadow" />
             <span className="font-display font-extrabold text-2xl text-white">{randomCountry.name}</span>
           </div>
         ),
@@ -399,7 +398,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
             <button
               type="submit"
               disabled={!typedInput.trim() || feedbackState !== 'none'}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-xl bg-[#5B7FFF] text-white flex items-center justify-center disabled:opacity-30"
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-xl bg-[#5B7FFF] text-[#0F1115] font-bold flex items-center justify-center disabled:opacity-30"
             >
               <Send className="w-4 h-4" />
             </button>
