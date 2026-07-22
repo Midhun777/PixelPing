@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Gamepad2, Dices, Sun, Moon, Volume2, VolumeX } from 'lucide-react';
+import { Gamepad2, Sun, Moon, Volume2, VolumeX } from 'lucide-react';
 import { sounds } from '../services/audio';
 
 interface HeroSectionProps {
@@ -11,7 +11,6 @@ interface HeroSectionProps {
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
-  onRandomClick,
   isDark,
   onToggleTheme,
 }) => {
@@ -26,17 +25,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     <section className="relative pt-6 pb-6 sm:pb-8 px-4 sm:px-6 overflow-hidden">
       {/* Top Corner Quick Action Controls */}
       <div className="max-w-5xl mx-auto flex items-center justify-end gap-2 mb-4 relative z-20">
-        <button
-          onClick={() => {
-            sounds.playDiceRoll();
-            onRandomClick();
-          }}
-          title="Surprise Me!"
-          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold glass-pill text-[#5B7FFF] dark:text-[#6C8DFF] border border-[#5B7FFF]/20 hover:border-[#5B7FFF]/40 hover:scale-105 active:scale-95 transition-all shadow-sm"
-        >
-          <Dices className="w-4 h-4 text-[#5B7FFF]" />
-          <span className="hidden sm:inline">Surprise Me</span>
-        </button>
 
         <button
           onClick={handleMuteToggle}
@@ -99,12 +87,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <h1 className="font-display font-black text-6xl sm:text-7xl md:text-8xl tracking-tight leading-none bg-clip-text text-transparent bg-gradient-to-r from-[#27D980] via-[#FFD84D] to-[#FF5C5C] uppercase select-none drop-shadow-sm">
               PING
             </h1>
-          </div>
-
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-card border border-white/60 dark:border-white/10 shadow-sm mt-1">
-            <span className="font-display font-semibold text-xs sm:text-sm text-slate-600 dark:text-slate-300 tracking-wider uppercase">
-              games and web stuff
-            </span>
           </div>
         </div>
       </div>
