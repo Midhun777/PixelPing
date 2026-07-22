@@ -3,10 +3,15 @@ import { BackgroundCanvas } from './components/BackgroundCanvas';
 import { HeroSection } from './components/HeroSection';
 import { GameGrid } from './components/GameGrid';
 import { GameModal } from './components/GameModal';
+import { GeographyHome } from './components/geography/GeographyHome';
 import { GAMES_DATA } from './data/gamesData';
 import type { GameItem } from './data/gamesData';
+import { sounds } from './services/audio';
 
 function App() {
+  // Primary Section Tab State
+  const [activeSection, setActiveSection] = useState<'geography' | 'casual'>('geography');
+
   // Theme state
   const [isDark, setIsDark] = useState<boolean>(() => {
     const saved = localStorage.getItem('miniarcade_theme');
@@ -42,7 +47,7 @@ function App() {
     });
   };
 
-  // Game Modal State
+  // Casual Game Modal State
   const [activeModalGame, setActiveModalGame] = useState<GameItem | null>(null);
 
   const handleLaunchGame = (gameId: string) => {
@@ -74,14 +79,54 @@ function App() {
           onToggleTheme={toggleTheme}
         />
 
-        {/* Game Cards Grid */}
-        <GameGrid
-          games={GAMES_DATA}
-          favorites={favorites}
-          onToggleFavorite={toggleFavorite}
-          onPlayGame={handleLaunchGame}
-          onResetFilters={() => {}}
-        />
+        {/* Primary Platform Section Switcher Bar */}
+        <div className="max-w-md mx-auto px-4 mb-6 relative z-20">
+          <div className="p-1.5 rounded-2xl glass-card border border-white/60 dark:border-white/10 shadow-xl flex items-center justify-center gap-1.5">
+            <button
+              onClick={() => {
+                sounds.playPop();
+                setActiveSection('geography');
+              }}
+              className={`flex-1 py-3 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 ${
+                activeSection === 'geography'
+                  ? 'bg-gradient-to-r from-[#5B7FFF] to-[#27D980] text-slate-950 shadow-lg scale-[1.02]'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <span>🌍 Geography Games</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-950/20 font-bold">
+                FEATURED
+              </span>
+            </button>
+
+            <button
+              onClick={() => {
+                sounds.playPop();
+                setActiveSection('casual');
+              }}
+              className={`flex-1 py-3 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 ${
+                activeSection === 'casual'
+                  ? 'bg-gradient-to-r from-[#5B7FFF] to-[#4364F7] text-white shadow-lg scale-[1.02]'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <span>🎮 Casual Games</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Dynamic Section Content */}
+        {activeSection === 'geography' ? (
+          <GeographyHome />
+        ) : (
+          <GameGrid
+            games={GAMES_DATA}
+            favorites={favorites}
+            onToggleFavorite={toggleFavorite}
+            onPlayGame={handleLaunchGame}
+            onResetFilters={() => {}}
+          />
+        )}
       </main>
 
       {/* Interactive Mini-Game Modal */}
