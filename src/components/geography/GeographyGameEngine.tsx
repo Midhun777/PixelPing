@@ -33,12 +33,18 @@ export const CountryFlagImage: React.FC<{ country: CountryData; className?: stri
   const flagCode = (country.iso2 || country.id).toLowerCase();
   const cdnUrl = `https://flagcdn.com/w320/${flagCode}.png`;
 
+  // Always reset fallback state when country changes
+  useEffect(() => {
+    setUseFallback(false);
+  }, [country.id, country.iso2]);
+
   if (useFallback) {
     return <span className="text-6xl select-none">{country.flag}</span>;
   }
 
   return (
     <img
+      key={`${country.id}-${flagCode}`}
       src={cdnUrl}
       alt={`${country.name} Flag`}
       onError={() => setUseFallback(true)}
@@ -94,7 +100,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           correctAnswer: randomCountry.name,
           options,
           targetCountry: randomCountry,
-          displayElement: <CountryFlagImage country={randomCountry} />,
+          displayElement: <CountryFlagImage key={randomCountry.id} country={randomCountry} />,
         };
       }
 
@@ -107,7 +113,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           correctAnswer: randomCountry.name,
           options,
           targetCountry: randomCountry,
-          displayElement: <CountryFlagImage country={randomCountry} />,
+          displayElement: <CountryFlagImage key={randomCountry.id} country={randomCountry} />,
         };
       }
 
@@ -122,7 +128,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           targetCountry: randomCountry,
           displayElement: (
             <div className="flex items-center gap-4">
-              <CountryFlagImage country={randomCountry} className="w-16 h-11 object-cover rounded-lg shadow" />
+              <CountryFlagImage key={randomCountry.id} country={randomCountry} className="w-16 h-11 object-cover rounded-lg shadow" />
               <span className="font-display font-extrabold text-2xl text-white">{randomCountry.name}</span>
             </div>
           ),
@@ -160,7 +166,8 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
 
       if (mode === 'population_challenge' || mode === 'area_challenge') {
         const isPop = mode === 'population_challenge';
-        const otherCountry = pool.find((c) => c.id !== randomCountry.id) || pool[0];
+        const availableOthers = pool.filter((c) => c.id !== randomCountry.id);
+        const otherCountry = availableOthers.length > 0 ? availableOthers[Math.floor(Math.random() * availableOthers.length)] : pool[0];
         const isRandomLarger = isPop
           ? randomCountry.population >= otherCountry.population
           : randomCountry.areaSqKm >= otherCountry.areaSqKm;
@@ -174,14 +181,15 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           targetCountry: randomCountry,
           secondaryCountry: otherCountry,
           displayElement: (
-            <div className="grid grid-cols-2 gap-4 w-full">
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center gap-2">
-                <CountryFlagImage country={randomCountry} className="w-14 h-9 object-cover rounded-md shadow" />
-                <span className="font-bold text-sm text-white">{randomCountry.name}</span>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 w-full py-2">
+              <div className="flex items-center gap-2.5 bg-white/5 px-4 py-2 rounded-2xl border border-white/10">
+                <CountryFlagImage key={randomCountry.id} country={randomCountry} className="w-12 h-8 object-cover rounded-md shadow" />
+                <span className="font-extrabold text-sm text-white">{randomCountry.name}</span>
               </div>
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex flex-col items-center gap-2">
-                <CountryFlagImage country={otherCountry} className="w-14 h-9 object-cover rounded-md shadow" />
-                <span className="font-bold text-sm text-white">{otherCountry.name}</span>
+              <span className="text-amber-400 font-black px-2.5 py-1 bg-amber-400/20 rounded-full border border-amber-400/30 text-xs">VS</span>
+              <div className="flex items-center gap-2.5 bg-white/5 px-4 py-2 rounded-2xl border border-white/10">
+                <CountryFlagImage key={otherCountry.id} country={otherCountry} className="w-12 h-8 object-cover rounded-md shadow" />
+                <span className="font-extrabold text-sm text-white">{otherCountry.name}</span>
               </div>
             </div>
           ),
@@ -198,7 +206,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
         targetCountry: randomCountry,
         displayElement: (
           <div className="flex items-center gap-3">
-            <CountryFlagImage country={randomCountry} className="w-16 h-11 object-cover rounded-lg shadow" />
+            <CountryFlagImage key={randomCountry.id} country={randomCountry} className="w-16 h-11 object-cover rounded-lg shadow" />
             <span className="font-display font-extrabold text-2xl text-white">{randomCountry.name}</span>
           </div>
         ),
