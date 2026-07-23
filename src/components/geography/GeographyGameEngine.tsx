@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Heart, Clock, Zap, XCircle, Send } from 'lucide-react';
 import { COUNTRIES, getSmartDistractors, fuzzyMatch } from '../../data/geographyData';
 import type { CountryData, GeographyGameMeta } from '../../data/geographyData';
@@ -67,6 +67,17 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
 
   const pool = filteredDataset.length > 5 ? filteredDataset : COUNTRIES;
 
+  // Strict Non-repeating Deck Queue
+  const shuffledDeck = useRef<CountryData[]>([]);
+
+  // Function to get next non-used country in session
+  const getNextCountry = useCallback(() => {
+    if (shuffledDeck.current.length === 0) {
+      shuffledDeck.current = [...pool].sort(() => 0.5 - Math.random());
+    }
+    return shuffledDeck.current.pop() || pool[Math.floor(Math.random() * pool.length)];
+  }, [pool]);
+
   // Game Engine State
   const [questionIndex, setQuestionIndex] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
@@ -82,14 +93,14 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
   const [isGameOver, setIsGameOver] = useState<boolean>(false);
   const [questionStartTime, setQuestionStartTime] = useState<number>(Date.now());
 
-  // Generate Current Question
+  // Generate Current Question (Strictly Non-Repeating)
   const generateQuestion = useCallback(
     (index: number): QuestionItem => {
       const mode = game.id === 'mixed_geography'
-        ? ['country_flag', 'capital_guess', 'city_country', 'country_continent', 'population_challenge', 'landmark_guess'][index % 6]
+        ? ['country_flag', 'capital_guess', 'city_country', 'landmark_guess', 'mountain_challenge', 'river_challenge', 'country_continent', 'population_challenge'][index % 8]
         : game.id;
 
-      const randomCountry = pool[Math.floor(Math.random() * pool.length)];
+      const randomCountry = getNextCountry();
 
       if (mode === 'country_flag') {
         const distractors = getSmartDistractors(randomCountry, pool, (c) => c.name, 3);
@@ -150,17 +161,65 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
 
       if (mode === 'city_country') {
         const cityPool = pool.filter((c) => c.famousCities && c.famousCities.length > 0);
-        const cityCountry = cityPool.length > 0 ? cityPool[Math.floor(Math.random() * cityPool.length)] : randomCountry;
-        const famousCity = cityCountry.famousCities?.[0] || cityCountry.capital;
-        const distractors = getSmartDistractors(cityCountry, pool, (c) => c.name, 3);
-        const options = [...distractors, cityCountry.name].sort(() => 0.5 - Math.random());
+        const target = cityPool.length > 0 ? (cityPool.find((c) => c.id === randomCountry.id) || cityPool[0]) : randomCountry;
+        const famousCity = target.famousCities?.[0] || target.capital;
+        const distractors = getSmartDistractors(target, pool, (c) => c.name, 3);
+        const options = [...distractors, target.name].sort(() => 0.5 - Math.random());
         return {
           type: 'city_country',
           prompt: `Which country is the city of ${famousCity} located in?`,
-          correctAnswer: cityCountry.name,
+          correctAnswer: target.name,
           options,
-          targetCountry: cityCountry,
+          targetCountry: target,
           displayElement: <span className="font-display font-extrabold text-3xl text-cyan-400">🏙️ {famousCity}</span>,
+        };
+      }
+
+      if (mode === 'landmark_guess') {
+        const landmarkPool = pool.filter((c) => c.landmark && c.landmark.length > 0);
+        const target = landmarkPool.length > 0 ? (landmarkPool.find((c) => c.id === randomCountry.id) || landmarkPool[0]) : randomCountry;
+        const landmarkName = target.landmark || 'Great Pyramids of Giza';
+        const distractors = getSmartDistractors(target, pool, (c) => c.name, 3);
+        const options = [...distractors, target.name].sort(() => 0.5 - Math.random());
+        return {
+          type: 'landmark_guess',
+          prompt: `Which country is the famous landmark "${landmarkName}" located in?`,
+          correctAnswer: target.name,
+          options,
+          targetCountry: target,
+          displayElement: <span className="font-display font-extrabold text-3xl text-purple-400">🗿 {landmarkName}</span>,
+        };
+      }
+
+      if (mode === 'mountain_challenge') {
+        const mountainPool = pool.filter((c) => c.mountain && c.mountain.length > 0);
+        const target = mountainPool.length > 0 ? (mountainPool.find((c) => c.id === randomCountry.id) || mountainPool[0]) : randomCountry;
+        const mountainName = target.mountain || 'Mount Everest';
+        const distractors = getSmartDistractors(target, pool, (c) => c.name, 3);
+        const options = [...distractors, target.name].sort(() => 0.5 - Math.random());
+        return {
+          type: 'mountain_challenge',
+          prompt: `Which country is home to "${mountainName}"?`,
+          correctAnswer: target.name,
+          options,
+          targetCountry: target,
+          displayElement: <span className="font-display font-extrabold text-3xl text-blue-400">🏔️ {mountainName}</span>,
+        };
+      }
+
+      if (mode === 'river_challenge') {
+        const riverPool = pool.filter((c) => c.river && c.river.length > 0);
+        const target = riverPool.length > 0 ? (riverPool.find((c) => c.id === randomCountry.id) || riverPool[0]) : randomCountry;
+        const riverName = target.river || 'Amazon River';
+        const distractors = getSmartDistractors(target, pool, (c) => c.name, 3);
+        const options = [...distractors, target.name].sort(() => 0.5 - Math.random());
+        return {
+          type: 'river_challenge',
+          prompt: `Which country does the river "${riverName}" flow through?`,
+          correctAnswer: target.name,
+          options,
+          targetCountry: target,
+          displayElement: <span className="font-display font-extrabold text-3xl text-teal-400">🌊 {riverName}</span>,
         };
       }
 
@@ -212,7 +271,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
         ),
       };
     },
-    [game.id, pool]
+    [game.id, getNextCountry, pool]
   );
 
   const [currentQuestion, setCurrentQuestion] = useState<QuestionItem>(() => generateQuestion(0));
@@ -284,6 +343,21 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
     }, 1200);
   };
 
+  const handleResetSession = () => {
+    shuffledDeck.current = [...pool].sort(() => 0.5 - Math.random());
+    setQuestionIndex(0);
+    setScore(0);
+    setStreak(0);
+    setLongestStreak(0);
+    setCorrectCount(0);
+    setWrongCount(0);
+    setLivesRemaining(config.lives);
+    setTimeLeft(config.timeModeSeconds);
+    setIsGameOver(false);
+    setFeedbackState('none');
+    setCurrentQuestion(generateQuestion(0));
+  };
+
   if (isGameOver) {
     const totalAnswered = correctCount + wrongCount;
     const accuracyPercent = totalAnswered > 0 ? Math.round((correctCount / totalAnswered) * 100) : 0;
@@ -299,19 +373,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
     return (
       <GameResultsScreen
         stats={stats}
-        onPlayAgain={() => {
-          setQuestionIndex(0);
-          setScore(0);
-          setStreak(0);
-          setLongestStreak(0);
-          setCorrectCount(0);
-          setWrongCount(0);
-          setLivesRemaining(config.lives);
-          setTimeLeft(config.timeModeSeconds);
-          setIsGameOver(false);
-          setFeedbackState('none');
-          setCurrentQuestion(generateQuestion(0));
-        }}
+        onPlayAgain={handleResetSession}
         onChangeSettings={onChangeSettings}
         onReturnHome={onReturnHome}
       />
