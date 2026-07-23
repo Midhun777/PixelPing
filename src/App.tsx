@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import { BackgroundCanvas } from './components/BackgroundCanvas';
+import { Navbar } from './components/Navbar';
 import { GeographyHome } from './components/geography/GeographyHome';
 import { CasualCategoriesGrid } from './components/CasualCategoriesGrid';
 import { GameGrid } from './components/GameGrid';
 import { GameModal } from './components/GameModal';
+import { UserProfileModal } from './components/profile/UserProfileModal';
 import { GAMES_DATA } from './data/gamesData';
 import type { GameItem } from './data/gamesData';
+import { sounds } from './services/audio';
 
 function App() {
   // Navigation Tab State: 'home' | 'geography' | 'casual'
@@ -17,8 +20,11 @@ function App() {
   // Selected Category Filter State
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
+  // Profile Modal Open State
+  const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
+
   // Theme State
-  const [isDark] = useState<boolean>(() => {
+  const [isDark, setIsDark] = useState<boolean>(() => {
     const saved = localStorage.getItem('miniarcade_theme');
     if (saved !== null) return saved === 'dark';
     return true; // Default to sleek dark theme
@@ -33,6 +39,18 @@ function App() {
       localStorage.setItem('miniarcade_theme', 'light');
     }
   }, [isDark]);
+
+  const toggleTheme = () => {
+    setIsDark((prev) => !prev);
+  };
+
+  // Mute Sound State
+  const [isMuted, setIsMuted] = useState<boolean>(sounds.getMuted());
+
+  const toggleMute = () => {
+    const nextMuted = sounds.toggleMute();
+    setIsMuted(nextMuted);
+  };
 
   // Favorites state
   const [favorites, setFavorites] = useState<string[]>(() => {
@@ -68,12 +86,26 @@ function App() {
   });
 
   return (
-    <div className="relative min-h-screen flex flex-col selection:bg-[#6366F1]/20 selection:text-[#6366F1] py-4">
-      {/* Dynamic Animated Canvas Backdrop */}
+    <div className="relative min-h-screen flex flex-col selection:bg-[#6366F1]/20 selection:text-[#6366F1]">
+      {/* Cosmic Interactive Particle Canvas Background */}
       <BackgroundCanvas isDark={isDark} />
 
+      {/* Simple Top Navbar */}
+      <Navbar
+        activeTab={activeTab === 'casual' ? 'casual' : 'geography'}
+        onSelectTab={(tab) => {
+          setActiveTab(tab);
+          setSelectedCategory(null);
+        }}
+        onOpenProfile={() => setIsProfileOpen(true)}
+        isDark={isDark}
+        onToggleTheme={toggleTheme}
+        isMuted={isMuted}
+        onToggleMute={toggleMute}
+      />
+
       {/* Main Page Body Layout */}
-      <main className="flex-grow z-10">
+      <main className="flex-grow z-10 pt-2 sm:pt-4">
         {/* 1. Geography Section (Shown on Home or Geography Tab) */}
         {(activeTab === 'home' || activeTab === 'geography') && (
           <GeographyHome
@@ -106,6 +138,9 @@ function App() {
           </>
         )}
       </main>
+
+      {/* User Profile & Statistics Dashboard Modal */}
+      <UserProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
 
       {/* Casual Arcade Game Modal Overlay */}
       <GameModal game={activeModalGame} onClose={() => setActiveModalGame(null)} />

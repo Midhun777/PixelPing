@@ -6,6 +6,7 @@ import type { GameSetupConfig } from './GameSetupModal';
 import { GameResultsScreen } from './GameResultsScreen';
 import type { GameResultsStats } from './GameResultsScreen';
 import { sounds } from '../../services/audio';
+import { recordGameSession } from '../../services/statsService';
 
 interface GeographyGameEngineProps {
   game: GeographyGameMeta;
@@ -379,7 +380,26 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
     }, 1200);
   };
 
+  const hasRecordedRef = useRef(false);
+
+  useEffect(() => {
+    if (isGameOver && !hasRecordedRef.current) {
+      hasRecordedRef.current = true;
+      const totalAnswered = correctCount + wrongCount;
+      const accuracyPercent = totalAnswered > 0 ? Math.round((correctCount / totalAnswered) * 100) : 0;
+      recordGameSession({
+        gameTitle: game.title,
+        score,
+        correctAnswers: correctCount,
+        wrongAnswers: wrongCount,
+        accuracyPercent,
+        longestStreak,
+      });
+    }
+  }, [isGameOver, correctCount, wrongCount, game.title, score, longestStreak]);
+
   const handleResetSession = () => {
+    hasRecordedRef.current = false;
     shuffledDeck.current = [...pool].sort(() => 0.5 - Math.random());
     setQuestionIndex(0);
     setScore(0);
