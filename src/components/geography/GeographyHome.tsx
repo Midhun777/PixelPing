@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Play, ArrowRight, Globe } from 'lucide-react';
+import { Play, ArrowRight, BookOpen } from 'lucide-react';
 import { GEOGRAPHY_GAMES, preloadAllFlags } from '../../data/geographyData';
 import type { GeographyGameMeta } from '../../data/geographyData';
 import { GameSetupModal } from './GameSetupModal';
 import type { GameSetupConfig } from './GameSetupModal';
 import { GeographyGameEngine } from './GeographyGameEngine';
+import { PureCountryTypingEngine } from './PureCountryTypingEngine';
+import { CountryAtlasModal } from './CountryAtlasModal';
 import { sounds } from '../../services/audio';
 
 interface GeographyHomeProps {
@@ -22,6 +24,7 @@ export const GeographyHome: React.FC<GeographyHomeProps> = ({
 
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [selectedSetupGame, setSelectedSetupGame] = useState<GeographyGameMeta | null>(null);
+  const [isAtlasOpen, setIsAtlasOpen] = useState<boolean>(false);
   const [activeGameSession, setActiveGameSession] = useState<{
     game: GeographyGameMeta;
     config: GameSetupConfig;
@@ -38,9 +41,15 @@ export const GeographyHome: React.FC<GeographyHomeProps> = ({
     return matchesCategory && matchesSearch;
   });
 
+  const [isPureTypingActive, setIsPureTypingActive] = useState<boolean>(false);
+
   const handleCardClick = (game: GeographyGameMeta) => {
     sounds.playPop();
-    setSelectedSetupGame(game);
+    if (game.id === 'pure_country_typing') {
+      setIsPureTypingActive(true);
+    } else {
+      setSelectedSetupGame(game);
+    }
   };
 
   const handleStartGame = (config: GameSetupConfig) => {
@@ -49,6 +58,16 @@ export const GeographyHome: React.FC<GeographyHomeProps> = ({
       setSelectedSetupGame(null);
     }
   };
+
+  if (isPureTypingActive) {
+    const pureGame = GEOGRAPHY_GAMES.find((g) => g.id === 'pure_country_typing') || GEOGRAPHY_GAMES[0];
+    return (
+      <PureCountryTypingEngine
+        game={pureGame}
+        onReturnHome={() => setIsPureTypingActive(false)}
+      />
+    );
+  }
 
   if (activeGameSession) {
     return (
@@ -65,30 +84,49 @@ export const GeographyHome: React.FC<GeographyHomeProps> = ({
   }
 
   return (
-    <section id="geography-games" className="max-w-7xl mx-auto px-4 sm:px-6 py-8 select-none">
-      {/* Section Header matching Reference: Title + "View all ->" */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-[#6366F1]/10 flex items-center justify-center">
-            <Globe className="w-5 h-5 text-[#6366F1] dark:text-[#818CF8]" />
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 mb-12 select-none">
+      {/* Section Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="px-2.5 py-0.5 rounded-full bg-[#6366F1]/20 border border-[#6366F1]/40 text-[#818CF8] text-[10px] font-extrabold uppercase tracking-wider font-display">
+              Core Specialty
+            </span>
           </div>
-          <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">
-            Geography Games
+          <h2 className="font-display font-black text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">
+            World Geography Suite
           </h2>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
+            Explore 195+ world countries, flags, capitals, landmarks & population duels
+          </p>
         </div>
 
-        {onViewAllClick && (
+        {/* Action Buttons: World Atlas Encyclopedia & View All */}
+        <div className="flex items-center gap-2">
           <button
             onClick={() => {
               sounds.playPop();
-              onViewAllClick();
+              setIsAtlasOpen(true);
             }}
-            className="flex items-center gap-1.5 text-xs font-display font-extrabold text-[#6366F1] dark:text-[#818CF8] hover:text-[#4F46E5] transition-colors group"
+            className="px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-display font-black text-xs shadow-lg shadow-emerald-500/20 btn-tactile flex items-center gap-1.5"
           >
-            <span>View all</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>📖 World Atlas Reference</span>
           </button>
-        )}
+
+          {onViewAllClick && (
+            <button
+              onClick={() => {
+                sounds.playPop();
+                onViewAllClick();
+              }}
+              className="px-3.5 py-2 rounded-full glass-card border border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-xs font-display font-bold flex items-center gap-1 transition-all btn-tactile"
+            >
+              <span>View Suite</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Category Filter Chips Bar */}
@@ -170,6 +208,12 @@ export const GeographyHome: React.FC<GeographyHomeProps> = ({
         game={selectedSetupGame}
         onClose={() => setSelectedSetupGame(null)}
         onStartGame={handleStartGame}
+      />
+
+      {/* World Geography Atlas & Reference Encyclopedia Modal */}
+      <CountryAtlasModal
+        isOpen={isAtlasOpen}
+        onClose={() => setIsAtlasOpen(false)}
       />
     </section>
   );

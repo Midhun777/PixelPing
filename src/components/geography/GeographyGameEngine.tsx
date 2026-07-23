@@ -122,10 +122,32 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
   const generateQuestion = useCallback(
     (index: number): QuestionItem => {
       const mode = game.id === 'mixed_geography'
-        ? ['country_flag', 'capital_guess', 'city_country', 'landmark_guess', 'mountain_challenge', 'river_challenge', 'country_continent', 'population_challenge'][index % 8]
+        ? ['pure_country_typing', 'country_flag', 'capital_guess', 'city_country', 'landmark_guess', 'mountain_challenge', 'river_challenge', 'country_continent', 'population_challenge'][index % 9]
         : game.id;
 
       const randomCountry = getNextCountry();
+
+      if (mode === 'pure_country_typing') {
+        return {
+          type: 'pure_country_typing',
+          prompt: `Type the name of Country #${index + 1}`,
+          correctAnswer: randomCountry.name,
+          targetCountry: randomCountry,
+          displayElement: (
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-emerald-500/20 via-teal-500/20 to-cyan-500/20 border border-emerald-400/30 flex items-center justify-center text-5xl shadow-2xl animate-pulse">
+                ⌨️
+              </div>
+              <span className="font-display font-black text-2xl sm:text-3xl text-emerald-400">
+                Country Target #{index + 1}
+              </span>
+              <span className="text-xs font-bold text-slate-400">
+                Region Clue: {randomCountry.continent} ({randomCountry.subregion})
+              </span>
+            </div>
+          ),
+        };
+      }
 
       if (mode === 'country_flag') {
         const distractors = getSmartDistractors(randomCountry, pool, (c) => c.name, 3);
@@ -646,8 +668,18 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
               <input
                 type="text"
                 value={typedInput}
-                onChange={(e) => setTypedInput(e.target.value)}
-                placeholder="Type country name here..."
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setTypedInput(val);
+                  if (feedbackState !== 'none' || !val.trim()) return;
+
+                  // Instant Auto-Validation check without needing Enter key
+                  const isMatch = fuzzyMatch(val.trim(), currentQuestion.correctAnswer, currentQuestion.targetCountry.altNames);
+                  if (isMatch) {
+                    handleAnswerSubmit(val.trim());
+                  }
+                }}
+                placeholder="Type country name here (Auto-Validates Instantly!)..."
                 disabled={feedbackState !== 'none'}
                 autoFocus
                 className="w-full bg-slate-900 text-white placeholder-slate-500 rounded-2xl p-4 pr-14 text-base font-bold border border-white/20 focus:outline-none focus:border-[#6366F1]"
