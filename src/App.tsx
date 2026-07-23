@@ -140,9 +140,6 @@ function App() {
           </div>
         </div>
 
-        {/* Recently Played History Feed Bar */}
-        <RecentlyPlayedBar />
-
         {/* 1. Geography Section */}
         {activeTab === 'geography' && (
           <GeographyHome
@@ -173,6 +170,9 @@ function App() {
             />
           </>
         )}
+
+        {/* Recently Played History Feed Bar (Positioned at Bottom of Page) */}
+        <RecentlyPlayedBar />
       </main>
 
       {/* User Profile & Statistics Dashboard Modal */}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, Zap, RefreshCw, CheckCircle2 } from 'lucide-react';
-import { COUNTRIES, fuzzyMatch } from '../../data/geographyData';
+import { COUNTRIES } from '../../data/geographyData';
 import type { GeographyGameMeta } from '../../data/geographyData';
 import { CountryFlagImage } from './GeographyGameEngine';
 import { sounds } from '../../services/audio';
@@ -11,6 +11,8 @@ interface PureCountryTypingEngineProps {
   game: GeographyGameMeta;
   onReturnHome: () => void;
 }
+
+const normalize = (str: string) => str.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
 
 export const PureCountryTypingEngine: React.FC<PureCountryTypingEngineProps> = ({
   game,
@@ -28,22 +30,22 @@ export const PureCountryTypingEngine: React.FC<PureCountryTypingEngineProps> = (
     inputRef.current?.focus();
   }, []);
 
-  // Handle live instant typing check (No Enter key required, exact name match only)
+  // Handle live instant typing check (No Enter key required, robust string normalization)
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setInputVal(val);
 
     if (!val.trim() || isGameOver) return;
 
-    const cleanInput = val.trim().toLowerCase();
+    const cleanInput = normalize(val);
+    if (!cleanInput) return;
 
-    // Find matching un-guessed country
+    // Find matching un-guessed country with normalized string matching
     const match = COUNTRIES.find((c) => {
       if (guessedIds.has(c.id)) return false;
-      const mainMatch = c.name.toLowerCase() === cleanInput;
-      const altMatch = c.altNames && c.altNames.some((alt) => alt.toLowerCase() === cleanInput);
-      const isFuzzy = cleanInput.length >= 4 && fuzzyMatch(cleanInput, c.name, c.altNames);
-      return mainMatch || altMatch || isFuzzy;
+      const mainMatch = normalize(c.name) === cleanInput;
+      const altMatch = c.altNames && c.altNames.some((alt) => normalize(alt) === cleanInput);
+      return mainMatch || altMatch;
     });
 
     if (match) {
