@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Sun, Moon, Volume2, VolumeX, Globe, User } from 'lucide-react';
+import { Sun, Moon, Volume2, VolumeX, Globe, User, BookOpen } from 'lucide-react';
 import { sounds } from '../services/audio';
 import { getUserStats } from '../services/statsService';
 
 interface NavbarProps {
   onOpenProfile: () => void;
+  onOpenAtlas: () => void;
   isDark: boolean;
   onToggleTheme: () => void;
   isMuted: boolean;
@@ -13,6 +14,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({
   onOpenProfile,
+  onOpenAtlas,
   isDark,
   onToggleTheme,
   isMuted,
@@ -27,11 +29,12 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="sticky top-0 z-40 w-full glass-pill border-b border-slate-200/80 dark:border-white/10 backdrop-blur-2xl transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-4 select-none">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-3 select-none">
         {/* Left: Page / Brand Name */}
         <div
           onClick={() => {
             sounds.playPop();
+            window.location.hash = 'geography';
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
           className="flex items-center gap-2 cursor-pointer group shrink-0"
@@ -46,12 +49,27 @@ export const Navbar: React.FC<NavbarProps> = ({
           </span>
         </div>
 
-        {/* Right Controls: Profile Button, Sound FX Mute Toggle, Dark Mode Toggle */}
+        {/* Right Controls: World Atlas Highlight Button, Profile Button, Sound FX Mute Toggle, Theme Toggle */}
         <div className="flex items-center gap-2 sm:gap-2.5">
+          {/* Highlighted World Atlas Quick Button */}
+          <button
+            onClick={() => {
+              sounds.playPop();
+              window.location.hash = 'atlas';
+              onOpenAtlas();
+            }}
+            className="flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 text-white font-display font-black text-xs shadow-lg shadow-emerald-500/25 btn-tactile border border-white/20 animate-pulse hover:animate-none"
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">World Atlas</span>
+            <span className="text-[10px] bg-black/20 px-1.5 py-0.5 rounded-full font-bold">195</span>
+          </button>
+
           {/* User Profile Access Button */}
           <button
             onClick={() => {
               sounds.playPop();
+              window.location.hash = 'profile';
               const updatedStats = getUserStats();
               setPlayerLevel(updatedStats.level || 1);
               onOpenProfile();

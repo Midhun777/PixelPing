@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { X, Trophy, Flame, Target, Award, RotateCcw, Zap, CheckCircle2, XCircle } from 'lucide-react';
-import { getUserStats, resetUserStats, calculateLevelInfo } from '../../services/statsService';
+import { X, Trophy, Flame, Target, RotateCcw, Zap, CheckCircle2, XCircle, Clock } from 'lucide-react';
+import { getUserStats, resetUserStats, calculateLevelInfo, formatScreenTime } from '../../services/statsService';
 import type { UserStats } from '../../services/statsService';
 import { sounds } from '../../services/audio';
 
@@ -82,7 +82,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
             </div>
 
             <p className="text-xs font-extrabold text-amber-400 uppercase tracking-widest mb-3 flex items-center gap-1.5 font-display">
-              <Award className="w-4 h-4 text-amber-400" />
+              <Trophy className="w-4 h-4 text-amber-400" />
               <span>{rankTitle}</span>
             </p>
 
@@ -100,33 +100,41 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onCl
         </div>
 
         {/* Metric Cards Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 my-5 relative z-10 shrink-0">
-          <div className="p-3.5 rounded-2xl glass-card border border-white/10 flex flex-col items-center justify-center text-center">
-            <span className="text-xs text-slate-400 font-extrabold uppercase font-display mb-0.5">Wins</span>
-            <span className="font-display font-black text-2xl text-emerald-400 flex items-center gap-1">
-              <Trophy className="w-5 h-5 text-emerald-400 inline" />
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 my-5 relative z-10 shrink-0">
+          <div className="p-3 rounded-2xl glass-card border border-white/10 flex flex-col items-center justify-center text-center">
+            <span className="text-[11px] text-slate-400 font-extrabold uppercase font-display mb-0.5">Screen Time</span>
+            <span className="font-display font-black text-lg text-cyan-400 flex items-center gap-1">
+              <Clock className="w-4 h-4 text-cyan-400 inline" />
+              {formatScreenTime(stats.totalScreenTimeSeconds || 0)}
+            </span>
+          </div>
+
+          <div className="p-3 rounded-2xl glass-card border border-white/10 flex flex-col items-center justify-center text-center">
+            <span className="text-[11px] text-slate-400 font-extrabold uppercase font-display mb-0.5">Wins</span>
+            <span className="font-display font-black text-lg text-emerald-400 flex items-center gap-1">
+              <Trophy className="w-4 h-4 text-emerald-400 inline" />
               {stats.totalWins}
             </span>
           </div>
 
-          <div className="p-3.5 rounded-2xl glass-card border border-white/10 flex flex-col items-center justify-center text-center">
-            <span className="text-xs text-slate-400 font-extrabold uppercase font-display mb-0.5">Win Rate</span>
-            <span className="font-display font-black text-2xl text-indigo-400">
+          <div className="p-3 rounded-2xl glass-card border border-white/10 flex flex-col items-center justify-center text-center">
+            <span className="text-[11px] text-slate-400 font-extrabold uppercase font-display mb-0.5">Win Rate</span>
+            <span className="font-display font-black text-lg text-indigo-400">
               {winRate}%
             </span>
           </div>
 
-          <div className="p-3.5 rounded-2xl glass-card border border-white/10 flex flex-col items-center justify-center text-center">
-            <span className="text-xs text-slate-400 font-extrabold uppercase font-display mb-0.5">Best Streak</span>
-            <span className="font-display font-black text-2xl text-amber-400 flex items-center gap-1">
-              <Flame className="w-5 h-5 text-amber-400 fill-amber-400 inline" />
+          <div className="p-3 rounded-2xl glass-card border border-white/10 flex flex-col items-center justify-center text-center">
+            <span className="text-[11px] text-slate-400 font-extrabold uppercase font-display mb-0.5">Best Streak</span>
+            <span className="font-display font-black text-lg text-amber-400 flex items-center gap-1">
+              <Flame className="w-4 h-4 text-amber-400 fill-amber-400 inline" />
               {stats.globalLongestStreak}x
             </span>
           </div>
 
-          <div className="p-3.5 rounded-2xl glass-card border border-white/10 flex flex-col items-center justify-center text-center">
-            <span className="text-xs text-slate-400 font-extrabold uppercase font-display mb-0.5">Played</span>
-            <span className="font-display font-black text-2xl text-cyan-400">
+          <div className="p-3 rounded-2xl glass-card border border-white/10 flex flex-col items-center justify-center text-center col-span-2 sm:col-span-1">
+            <span className="text-[11px] text-slate-400 font-extrabold uppercase font-display mb-0.5">Played</span>
+            <span className="font-display font-black text-lg text-cyan-400">
               {stats.totalGamesPlayed}
             </span>
           </div>

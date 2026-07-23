@@ -125,12 +125,13 @@ export const CountryAtlasModal: React.FC<CountryAtlasModalProps> = ({ isOpen, on
               <option value="area">Largest Land Area</option>
             </select>
           </div>
-        </div>
-
-        {/* Main Countries Grid Display (Smooth Infinite Scrollable) */}
+        </div>        {/* Main Countries Grid Display (Smooth Infinite Scrollable) */}
         <div className="p-4 sm:p-6 overflow-y-auto flex-grow grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 no-scrollbar z-10 max-h-[72vh]">
           {filteredCountries.map((country) => {
             const meta = getCountryDetails(country);
+            const codeMatch = meta.currency.match(/\(([A-Z]{3,4})\)/);
+            const currCode = codeMatch ? codeMatch[1] : 'Unit';
+
             return (
               <div
                 key={country.id}
@@ -161,7 +162,7 @@ export const CountryAtlasModal: React.FC<CountryAtlasModalProps> = ({ isOpen, on
                 <div className="grid grid-cols-2 gap-2 text-[11px] font-medium text-slate-300 pt-2 border-t border-white/10">
                   <div className="flex items-center gap-1 font-bold text-emerald-400">
                     <Coins className="w-3 h-3 shrink-0" />
-                    <span>1 Unit = ₹{meta.rate} INR</span>
+                    <span>1 {currCode} = ₹{meta.rate} INR</span>
                   </div>
 
                   <div className="flex items-center gap-1 font-bold text-cyan-400">
@@ -182,6 +183,9 @@ export const CountryAtlasModal: React.FC<CountryAtlasModalProps> = ({ isOpen, on
         {/* Detailed Country Drawer Modal View */}
         {selectedCountry && (() => {
           const meta = getCountryDetails(selectedCountry);
+          const codeMatch = meta.currency.match(/\(([A-Z]{3,4})\)/);
+          const currCode = codeMatch ? codeMatch[1] : 'Unit';
+
           return (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in select-none">
               <div className="bg-[#080C14] border border-white/20 rounded-3xl p-5 sm:p-6 max-w-lg w-full text-white shadow-2xl relative max-h-[90vh] overflow-y-auto no-scrollbar flex flex-col">
@@ -215,7 +219,7 @@ export const CountryAtlasModal: React.FC<CountryAtlasModalProps> = ({ isOpen, on
                   <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex flex-col gap-1">
                     <span className="text-slate-400 text-[10px] uppercase font-extrabold">Currency & INR Rate</span>
                     <span className="text-emerald-400 text-xs font-black">💵 {meta.currency}</span>
-                    <span className="text-[11px] text-amber-300">1 Unit = ₹{meta.rate} INR</span>
+                    <span className="text-[11px] text-amber-300">1 {currCode} = ₹{meta.rate} INR</span>
                   </div>
 
                   <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex flex-col gap-1">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Play, ArrowRight, BookOpen } from 'lucide-react';
+import { Play, BookOpen } from 'lucide-react';
 import { GEOGRAPHY_GAMES, preloadAllFlags } from '../../data/geographyData';
 import type { GeographyGameMeta } from '../../data/geographyData';
 import { GameSetupModal } from './GameSetupModal';
@@ -12,11 +12,15 @@ import { sounds } from '../../services/audio';
 interface GeographyHomeProps {
   searchQuery?: string;
   onViewAllClick?: () => void;
+  isAtlasOpenProp?: boolean;
+  onToggleAtlasProp?: (open: boolean) => void;
 }
 
 export const GeographyHome: React.FC<GeographyHomeProps> = ({
   searchQuery = '',
-  onViewAllClick,
+  onViewAllClick: _onViewAllClick,
+  isAtlasOpenProp,
+  onToggleAtlasProp,
 }) => {
   useEffect(() => {
     preloadAllFlags();
@@ -24,7 +28,14 @@ export const GeographyHome: React.FC<GeographyHomeProps> = ({
 
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [selectedSetupGame, setSelectedSetupGame] = useState<GeographyGameMeta | null>(null);
-  const [isAtlasOpen, setIsAtlasOpen] = useState<boolean>(false);
+  const [internalAtlasOpen, setInternalAtlasOpen] = useState<boolean>(false);
+
+  const isAtlasOpen = isAtlasOpenProp !== undefined ? isAtlasOpenProp : internalAtlasOpen;
+  const setAtlasOpen = (val: boolean) => {
+    if (onToggleAtlasProp) onToggleAtlasProp(val);
+    setInternalAtlasOpen(val);
+  };
+
   const [activeGameSession, setActiveGameSession] = useState<{
     game: GeographyGameMeta;
     config: GameSetupConfig;
@@ -101,32 +112,17 @@ export const GeographyHome: React.FC<GeographyHomeProps> = ({
           </p>
         </div>
 
-        {/* Action Buttons: World Atlas Encyclopedia & View All */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => {
-              sounds.playPop();
-              setIsAtlasOpen(true);
-            }}
-            className="px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-display font-black text-xs shadow-lg shadow-emerald-500/20 btn-tactile flex items-center gap-1.5"
-          >
-            <BookOpen className="w-3.5 h-3.5" />
-            <span>📖 World Atlas Reference</span>
-          </button>
-
-          {onViewAllClick && (
-            <button
-              onClick={() => {
-                sounds.playPop();
-                onViewAllClick();
-              }}
-              className="px-3.5 py-2 rounded-full glass-card border border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-xs font-display font-bold flex items-center gap-1 transition-all btn-tactile"
-            >
-              <span>View Suite</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          )}
-        </div>
+        {/* Highlighted Open Atlas Encyclopedia Button */}
+        <button
+          onClick={() => {
+            sounds.playPop();
+            setAtlasOpen(true);
+          }}
+          className="px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 text-slate-950 font-display font-black text-xs sm:text-sm shadow-xl shadow-emerald-500/25 btn-tactile flex items-center gap-2 border border-white/20 hover:scale-105 transition-all"
+        >
+          <BookOpen className="w-4 h-4 text-slate-950" />
+          <span>Open Atlas Encyclopedia 🌐</span>
+        </button>
       </div>
 
       {/* Category Filter Chips Bar */}
@@ -213,7 +209,7 @@ export const GeographyHome: React.FC<GeographyHomeProps> = ({
       {/* World Geography Atlas & Reference Encyclopedia Modal */}
       <CountryAtlasModal
         isOpen={isAtlasOpen}
-        onClose={() => setIsAtlasOpen(false)}
+        onClose={() => setAtlasOpen(false)}
       />
     </section>
   );

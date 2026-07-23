@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, Zap, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Zap, RefreshCw, CheckCircle2, Clock } from 'lucide-react';
 import { COUNTRIES } from '../../data/geographyData';
 import type { GeographyGameMeta } from '../../data/geographyData';
 import { CountryFlagImage } from './GeographyGameEngine';
@@ -14,6 +14,12 @@ interface PureCountryTypingEngineProps {
 
 const normalize = (str: string) => str.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
 
+const formatTime = (totalSeconds: number) => {
+  const mins = Math.floor(totalSeconds / 60);
+  const secs = totalSeconds % 60;
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+};
+
 export const PureCountryTypingEngine: React.FC<PureCountryTypingEngineProps> = ({
   game,
   onReturnHome,
@@ -21,6 +27,7 @@ export const PureCountryTypingEngine: React.FC<PureCountryTypingEngineProps> = (
   const [inputVal, setInputVal] = useState('');
   const [guessedIds, setGuessedIds] = useState<Set<string>>(new Set());
   const [score, setScore] = useState(0);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [isGameOver, setIsGameOver] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -30,7 +37,16 @@ export const PureCountryTypingEngine: React.FC<PureCountryTypingEngineProps> = (
     inputRef.current?.focus();
   }, []);
 
-  // Handle live instant typing check (No Enter key required, robust string normalization)
+  // Live Timer Counter
+  useEffect(() => {
+    if (isGameOver) return;
+    const interval = setInterval(() => {
+      setElapsedSeconds((prev) => prev + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [isGameOver]);
+
+  // Handle live instant typing check
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setInputVal(val);
@@ -82,6 +98,7 @@ export const PureCountryTypingEngine: React.FC<PureCountryTypingEngineProps> = (
     hasRecordedRef.current = false;
     setGuessedIds(new Set());
     setScore(0);
+    setElapsedSeconds(0);
     setInputVal('');
     setIsGameOver(false);
     setTimeout(() => inputRef.current?.focus(), 100);
@@ -99,7 +116,7 @@ export const PureCountryTypingEngine: React.FC<PureCountryTypingEngineProps> = (
           wrongAnswers: 0,
           accuracyPercent,
           longestStreak: count,
-          averageTimeSeconds: 2.0,
+          averageTimeSeconds: elapsedSeconds,
         }}
         onPlayAgain={handleReset}
         onChangeSettings={handleReset}
@@ -151,12 +168,18 @@ export const PureCountryTypingEngine: React.FC<PureCountryTypingEngineProps> = (
         {/* Ambient Top Glow */}
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 opacity-20 blur-3xl pointer-events-none" />
 
-        {/* Live Score & Named Counter Ticker */}
+        {/* Live Score, Timer & Named Counter Ticker */}
         <div className="flex items-center justify-between mb-5 text-xs font-display font-extrabold text-slate-400 pb-3 border-b border-white/10 flex-wrap gap-2">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400">
               <Zap className="w-3.5 h-3.5 fill-amber-400" />
               <span>{score} PTS</span>
+            </div>
+
+            {/* Live Stopwatch Elapsed Timer Badge */}
+            <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 font-mono font-bold">
+              <Clock className="w-3.5 h-3.5 text-cyan-400" />
+              <span>{formatTime(elapsedSeconds)}</span>
             </div>
           </div>
 

@@ -33,6 +33,7 @@ export interface UserStats {
   totalCorrect: number;
   totalWrong: number;
   globalLongestStreak: number;
+  totalScreenTimeSeconds: number;
   gameRecords: Record<string, GameRecord>;
   matchHistory: MatchHistoryItem[];
 }
@@ -49,6 +50,7 @@ const DEFAULT_STATS: UserStats = {
   totalCorrect: 0,
   totalWrong: 0,
   globalLongestStreak: 0,
+  totalScreenTimeSeconds: 0,
   gameRecords: {},
   matchHistory: [],
 };
@@ -70,6 +72,7 @@ export function getUserStats(): UserStats {
     return {
       ...DEFAULT_STATS,
       ...parsed,
+      totalScreenTimeSeconds: parsed.totalScreenTimeSeconds || 0,
       gameRecords: parsed.gameRecords || {},
       matchHistory: parsed.matchHistory || [],
     };
@@ -86,6 +89,27 @@ export function saveUserStats(stats: UserStats): void {
   } catch (err) {
     console.error('Failed to save user stats to localStorage:', err);
   }
+}
+
+export function addScreenTimeSeconds(seconds: number): void {
+  const stats = getUserStats();
+  stats.totalScreenTimeSeconds = (stats.totalScreenTimeSeconds || 0) + seconds;
+  saveUserStats(stats);
+}
+
+export function formatScreenTime(totalSeconds: number): string {
+  if (!totalSeconds || totalSeconds <= 0) return '0m';
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const secs = totalSeconds % 60;
+
+  if (hours > 0) {
+    return `${hours}h ${minutes}m`;
+  }
+  if (minutes > 0) {
+    return `${minutes}m ${secs}s`;
+  }
+  return `${secs}s`;
 }
 
 export function recordGameSession(session: {

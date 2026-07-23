@@ -2,19 +2,62 @@
 <html lang="en" class="h-full scroll-smooth">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌐</text></svg>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
-    <title>PixelPing — Tiny Games. Infinite Fun.</title>
-    <meta name="description" content="Discover modern, beautiful browser games that load instantly and take only minutes to enjoy. Minimal UI, premium motion, mobile-first arcade delight." />
     
+    <!-- Primary SEO Meta Tags -->
+    <title>PixelPing — Free World Geography Games & Brain Arcade</title>
+    <meta name="title" content="PixelPing — Free World Geography Games & Brain Arcade" />
+    <meta name="description" content="Play free online world geography games, flag quizzes, capital city guessing, 195-country atlas encyclopedia with currencies in INR (₹), phone codes, timezones, and brain arcade games. Instant play, zero ads, mobile-first!" />
+    <meta name="keywords" content="world geography game, guess country name, flag quiz online, capital city game, 195 countries atlas, world reference encyclopedia, currency exchange INR, phone calling codes, timezones, brain games online, 2048 game, reflex test, free online browser games" />
+    <meta name="author" content="PixelPing Games" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <link rel="canonical" href="https://pixelpingweb.vercel.app/" />
+    <meta name="theme-color" content="#0F1523" />
+
+    <!-- Open Graph / Facebook / LinkedIn / WhatsApp Social Sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://pixelpingweb.vercel.app/" />
+    <meta property="og:title" content="PixelPing — Free World Geography Games & Brain Arcade" />
+    <meta property="og:description" content="Master 195+ world countries, flags, capitals, land areas, INR currencies, phone codes, timezones & brain arcade games in instant mobile-first web app." />
+    <meta property="og:image" content="https://flagcdn.com/w640/un.png" />
+    <meta property="og:site_name" content="PixelPing Games" />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://pixelpingweb.vercel.app/" />
+    <meta name="twitter:title" content="PixelPing — Free World Geography Games & Brain Arcade" />
+    <meta name="twitter:description" content="Test your world geography knowledge across 195 countries! Flags, capitals, currencies in INR (₹), timezones & instant brain arcade games." />
+    <meta name="twitter:image" content="https://flagcdn.com/w640/un.png" />
+
     <!-- Google Fonts: Outfit, Space Grotesk, and Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Structured Data (JSON-LD) for Google Search Rich Results -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "PixelPing World Geography Games & Brain Arcade",
+      "url": "https://pixelpingweb.vercel.app/",
+      "applicationCategory": "EducationalGame",
+      "genre": "Geography & Brain Arcade Games",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "Free interactive world geography games, flag quizzes, 195-country encyclopedia atlas, currencies in INR (₹), international calling codes, timezones, and casual brain arcade games.",
+      "inLanguage": "en"
+    }
+    </script>
   </head>
   <body class="min-h-full bg-[#FAFAFA] dark:bg-[#0F1115] text-[#111827] dark:text-[#F3F4F6] font-sans antialiased overflow-x-hidden selection:bg-[#5B7FFF]/20 selection:text-[#5B7FFF] transition-colors duration-300">
     <div id="root" class="min-h-full flex flex-col"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-

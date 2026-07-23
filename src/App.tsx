@@ -3,6 +3,7 @@ import { Globe, Gamepad2 } from 'lucide-react';
 import { BackgroundCanvas } from './components/BackgroundCanvas';
 import { Navbar } from './components/Navbar';
 import { GeographyHome } from './components/geography/GeographyHome';
+import { CountryAtlasModal } from './components/geography/CountryAtlasModal';
 import { CasualCategoriesGrid } from './components/CasualCategoriesGrid';
 import { GameGrid } from './components/GameGrid';
 import { GameModal } from './components/GameModal';
@@ -11,6 +12,7 @@ import { UserProfileModal } from './components/profile/UserProfileModal';
 import { GAMES_DATA } from './data/gamesData';
 import type { GameItem } from './data/gamesData';
 import { sounds } from './services/audio';
+import { addScreenTimeSeconds } from './services/statsService';
 
 function App() {
   // Navigation Tab State: 'geography' | 'casual'
@@ -24,6 +26,38 @@ function App() {
 
   // Profile Modal Open State
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
+
+  // World Atlas Modal State
+  const [isAtlasOpen, setIsAtlasOpen] = useState<boolean>(false);
+
+  // Handle URL Hash Page Routing for shareable navigation
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.toLowerCase().replace('#', '');
+      if (hash === 'arcade') {
+        setActiveTab('casual');
+      } else if (hash === 'geography') {
+        setActiveTab('geography');
+      } else if (hash === 'atlas') {
+        setActiveTab('geography');
+        setIsAtlasOpen(true);
+      } else if (hash === 'profile') {
+        setIsProfileOpen(true);
+      }
+    };
+
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  // Screen Time Tracker (increments 5s every 5s)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      addScreenTimeSeconds(5);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Theme State
   const [isDark, setIsDark] = useState<boolean>(() => {
@@ -92,9 +126,10 @@ function App() {
       {/* Cosmic Interactive Particle Canvas Background */}
       <BackgroundCanvas isDark={isDark} />
 
-      {/* Simple Top Navbar */}
+      {/* Top Header Navbar */}
       <Navbar
         onOpenProfile={() => setIsProfileOpen(true)}
+        onOpenAtlas={() => setIsAtlasOpen(true)}
         isDark={isDark}
         onToggleTheme={toggleTheme}
         isMuted={isMuted}
@@ -109,6 +144,7 @@ function App() {
             <button
               onClick={() => {
                 sounds.playPop();
+                window.location.hash = 'geography';
                 setActiveTab('geography');
                 setSelectedCategory(null);
               }}
@@ -125,6 +161,7 @@ function App() {
             <button
               onClick={() => {
                 sounds.playPop();
+                window.location.hash = 'arcade';
                 setActiveTab('casual');
                 setSelectedCategory(null);
               }}
@@ -145,6 +182,8 @@ function App() {
           <GeographyHome
             searchQuery={searchQuery}
             onViewAllClick={() => setActiveTab('geography')}
+            isAtlasOpenProp={isAtlasOpen}
+            onToggleAtlasProp={(open) => setIsAtlasOpen(open)}
           />
         )}
 
@@ -177,6 +216,9 @@ function App() {
 
       {/* User Profile & Statistics Dashboard Modal */}
       <UserProfileModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
+
+      {/* World Atlas Reference Modal */}
+      <CountryAtlasModal isOpen={isAtlasOpen} onClose={() => setIsAtlasOpen(false)} />
 
       {/* Casual Arcade Game Modal Overlay */}
       <GameModal game={activeModalGame} onClose={() => setActiveModalGame(null)} />
