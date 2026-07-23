@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, Zap, RefreshCw, CheckCircle2 } from 'lucide-react';
-import { COUNTRIES, fuzzyMatch } from '../../data/geographyData';
+import { COUNTRIES } from '../../data/geographyData';
 import type { GeographyGameMeta } from '../../data/geographyData';
 import { CountryFlagImage } from './GeographyGameEngine';
 import { sounds } from '../../services/audio';
@@ -28,7 +28,7 @@ export const PureCountryTypingEngine: React.FC<PureCountryTypingEngineProps> = (
     inputRef.current?.focus();
   }, []);
 
-  // Handle live instant typing check (No Enter key required, no wrong penalties)
+  // Handle live instant typing check (No Enter key required, exact name match only)
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setInputVal(val);
@@ -37,13 +37,12 @@ export const PureCountryTypingEngine: React.FC<PureCountryTypingEngineProps> = (
 
     const cleanInput = val.trim().toLowerCase();
 
-    // Find matching un-guessed country
+    // Find matching un-guessed country by exact name or exact alternative name
     const match = COUNTRIES.find((c) => {
       if (guessedIds.has(c.id)) return false;
-      return (
-        c.name.toLowerCase() === cleanInput ||
-        fuzzyMatch(cleanInput, c.name, c.altNames)
-      );
+      const mainMatch = c.name.toLowerCase() === cleanInput;
+      const altMatch = c.altNames && c.altNames.some((alt) => alt.toLowerCase() === cleanInput);
+      return mainMatch || altMatch;
     });
 
     if (match) {
@@ -176,14 +175,14 @@ export const PureCountryTypingEngine: React.FC<PureCountryTypingEngineProps> = (
         {/* Direct Open Typing Box */}
         <div className="mb-6">
           <label className="block text-center text-xs font-extrabold text-slate-300 uppercase tracking-wider mb-2 font-display">
-            Type any country name (Auto-validates instantly as you type!)
+            Type any country name (Auto-validates instantly on exact match!)
           </label>
           <input
             ref={inputRef}
             type="text"
             value={inputVal}
             onChange={handleInputChange}
-            placeholder="Type country (e.g. France, Japan, Brazil, India)..."
+            placeholder="Type country name here..."
             className="w-full bg-[#080C14] text-white text-center placeholder-slate-500 rounded-2xl p-4 sm:p-5 text-lg sm:text-xl font-display font-black border-2 border-emerald-500/40 focus:outline-none focus:border-emerald-400 shadow-2xl transition-all"
             autoFocus
           />

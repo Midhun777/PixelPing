@@ -14,6 +14,68 @@ export interface CountryData {
   landmark?: string;
   mountain?: string;
   river?: string;
+  currency?: string;
+  currencyInINR?: number;
+  phoneCode?: string;
+  timeZone?: string;
+}
+
+export function getCountryDetails(country: CountryData) {
+  const currencyMap: Record<string, { currency: string; rate: number; phone: string; tz: string }> = {
+    us: { currency: 'US Dollar (USD)', rate: 83.5, phone: '+1', tz: 'UTC-5 (EST)' },
+    gb: { currency: 'British Pound (GBP)', rate: 107.4, phone: '+44', tz: 'UTC+0 (GMT)' },
+    fr: { currency: 'Euro (EUR)', rate: 91.2, phone: '+33', tz: 'UTC+1 (CET)' },
+    de: { currency: 'Euro (EUR)', rate: 91.2, phone: '+49', tz: 'UTC+1 (CET)' },
+    it: { currency: 'Euro (EUR)', rate: 91.2, phone: '+39', tz: 'UTC+1 (CET)' },
+    es: { currency: 'Euro (EUR)', rate: 91.2, phone: '+34', tz: 'UTC+1 (CET)' },
+    jp: { currency: 'Japanese Yen (JPY)', rate: 0.54, phone: '+81', tz: 'UTC+9 (JST)' },
+    in: { currency: 'Indian Rupee (INR)', rate: 1.0, phone: '+91', tz: 'UTC+5:30 (IST)' },
+    cn: { currency: 'Chinese Yuan (CNY)', rate: 11.5, phone: '+86', tz: 'UTC+8 (CST)' },
+    kr: { currency: 'South Korean Won (KRW)', rate: 0.062, phone: '+82', tz: 'UTC+9 (KST)' },
+    ca: { currency: 'Canadian Dollar (CAD)', rate: 61.2, phone: '+1', tz: 'UTC-5 (EST)' },
+    au: { currency: 'Australian Dollar (AUD)', rate: 54.8, phone: '+61', tz: 'UTC+10 (AEST)' },
+    br: { currency: 'Brazilian Real (BRL)', rate: 15.2, phone: '+55', tz: 'UTC-3 (BRT)' },
+    ae: { currency: 'UAE Dirham (AED)', rate: 22.7, phone: '+971', tz: 'UTC+4 (GST)' },
+    sa: { currency: 'Saudi Riyal (SAR)', rate: 22.3, phone: '+966', tz: 'UTC+3 (AST)' },
+    ru: { currency: 'Russian Ruble (RUB)', rate: 0.94, phone: '+7', tz: 'UTC+3 (MSK)' },
+    za: { currency: 'South African Rand (ZAR)', rate: 4.6, phone: '+27', tz: 'UTC+2 (SAST)' },
+    mx: { currency: 'Mexican Peso (MXN)', rate: 4.5, phone: '+52', tz: 'UTC-6 (CST)' },
+    sg: { currency: 'Singapore Dollar (SGD)', rate: 62.1, phone: '+65', tz: 'UTC+8 (SGT)' },
+    ch: { currency: 'Swiss Franc (CHF)', rate: 95.8, phone: '+41', tz: 'UTC+1 (CET)' },
+    nz: { currency: 'New Zealand Dollar (NZD)', rate: 51.2, phone: '+64', tz: 'UTC+12 (NZST)' },
+    nl: { currency: 'Euro (EUR)', rate: 91.2, phone: '+31', tz: 'UTC+1 (CET)' },
+    be: { currency: 'Euro (EUR)', rate: 91.2, phone: '+32', tz: 'UTC+1 (CET)' },
+    se: { currency: 'Swedish Krona (SEK)', rate: 7.9, phone: '+46', tz: 'UTC+1 (CET)' },
+    no: { currency: 'Norwegian Krone (NOK)', rate: 7.8, phone: '+47', tz: 'UTC+1 (CET)' },
+    dk: { currency: 'Danish Krone (DKK)', rate: 12.2, phone: '+45', tz: 'UTC+1 (CET)' },
+    fi: { currency: 'Euro (EUR)', rate: 91.2, phone: '+358', tz: 'UTC+2 (EET)' },
+    pl: { currency: 'Polish Złoty (PLN)', rate: 21.0, phone: '+48', tz: 'UTC+1 (CET)' },
+    ie: { currency: 'Euro (EUR)', rate: 91.2, phone: '+353', tz: 'UTC+0 (GMT)' },
+    gr: { currency: 'Euro (EUR)', rate: 91.2, phone: '+30', tz: 'UTC+2 (EET)' },
+    tr: { currency: 'Turkish Lira (TRY)', rate: 2.6, phone: '+90', tz: 'UTC+3 (TRT)' },
+    pt: { currency: 'Euro (EUR)', rate: 91.2, phone: '+351', tz: 'UTC+0 (WET)' },
+    at: { currency: 'Euro (EUR)', rate: 91.2, phone: '+43', tz: 'UTC+1 (CET)' },
+    th: { currency: 'Thai Baht (THB)', rate: 2.3, phone: '+66', tz: 'UTC+7 (ICT)' },
+    id: { currency: 'Indonesian Rupiah (IDR)', rate: 0.0053, phone: '+62', tz: 'UTC+7 (WIB)' },
+    vn: { currency: 'Vietnamese Dong (VND)', rate: 0.0033, phone: '+84', tz: 'UTC+7 (ICT)' },
+    my: { currency: 'Malaysian Ringgit (MYR)', rate: 17.8, phone: '+60', tz: 'UTC+8 (MYT)' },
+    ph: { currency: 'Philippine Peso (PHP)', rate: 1.45, phone: '+63', tz: 'UTC+8 (PHT)' },
+    eg: { currency: 'Egyptian Pound (EGP)', rate: 1.75, phone: '+20', tz: 'UTC+2 (EEST)' },
+    ar: { currency: 'Argentine Peso (ARS)', rate: 0.092, phone: '+54', tz: 'UTC-3 (ART)' },
+  };
+
+  const iso = (country.iso2 || country.id).toLowerCase();
+  if (currencyMap[iso]) {
+    return currencyMap[iso];
+  }
+
+  // Fallback defaults based on continent
+  if (country.continent === 'Europe') return { currency: 'Euro (EUR)', rate: 91.2, phone: `+${Math.floor(Math.random()*40)+30}`, tz: 'UTC+1 (CET)' };
+  if (country.continent === 'North America') return { currency: 'US Dollar (USD)', rate: 83.5, phone: `+1`, tz: 'UTC-5 (EST)' };
+  if (country.continent === 'South America') return { currency: 'Local Peso', rate: 12.4, phone: `+54`, tz: 'UTC-3 (ART)' };
+  if (country.continent === 'Asia') return { currency: 'Local Currency', rate: 4.5, phone: `+84`, tz: 'UTC+7 (ICT)' };
+  if (country.continent === 'Africa') return { currency: 'African Franc / Shilling', rate: 1.8, phone: `+254`, tz: 'UTC+3 (EAT)' };
+  return { currency: 'Local Dollar', rate: 50.0, phone: `+64`, tz: 'UTC+12 (NZST)' };
 }
 
 export interface GeographyGameMeta {

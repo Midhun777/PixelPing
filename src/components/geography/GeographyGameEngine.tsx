@@ -489,15 +489,15 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
   const letterLabels = ['A', 'B', 'C', 'D'];
 
   return (
-    <div className="w-full max-w-xl mx-auto px-4 py-4 select-none">
+    <div className="w-full max-w-2xl mx-auto px-4 py-4 sm:py-6 select-none relative z-10">
       {/* Top Header Control Navigation */}
-      <div className="flex items-center justify-between gap-3 mb-4">
+      <div className="flex items-center justify-between gap-3 mb-5 relative z-20">
         <button
           onClick={() => {
             sounds.playPop();
             onReturnHome();
           }}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full glass-card border border-white/10 text-xs font-display font-extrabold text-slate-300 hover:text-white hover:bg-white/10 transition-all btn-tactile"
+          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full glass-card border border-white/10 text-xs font-display font-extrabold text-slate-300 hover:text-white hover:bg-white/10 transition-all btn-tactile shadow-md"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Exit</span>
@@ -526,7 +526,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
               onChangeSettings();
             }}
             title="Session Settings"
-            className="w-8 h-8 rounded-full glass-card border border-white/10 flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/10 transition-all btn-tactile"
+            className="w-8 h-8 rounded-full glass-card border border-white/10 flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/10 transition-all btn-tactile shadow-md"
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
@@ -534,13 +534,13 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
       </div>
 
       {/* Main Game Screen Card Container */}
-      <div className="bg-[#0F1523]/95 rounded-[32px] p-6 sm:p-8 border border-white/15 shadow-2xl relative overflow-hidden text-white backdrop-blur-2xl">
+      <div className="bg-[#0F1523]/95 rounded-[32px] p-5 sm:p-8 border border-white/15 shadow-2xl relative overflow-hidden text-white backdrop-blur-2xl transition-all duration-300">
         {/* Ambient Top Glow */}
         <div className={`absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-gradient-to-br ${game.gradient} opacity-20 blur-3xl pointer-events-none`} />
 
         {/* Animated Progress Bar */}
         {config.questionCount > 0 && (
-          <div className="w-full bg-white/10 h-2 rounded-full mb-5 overflow-hidden p-0.5 border border-white/10">
+          <div className="w-full bg-white/10 h-2 rounded-full mb-4 overflow-hidden p-0.5 border border-white/10">
             <div
               className="bg-gradient-to-r from-[#6366F1] via-[#10B981] to-[#F59E0B] h-full rounded-full transition-all duration-500 shadow-sm"
               style={{ width: `${progressPercent}%` }}
@@ -549,7 +549,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
         )}
 
         {/* Score & Game Ticker Bar */}
-        <div className="flex items-center justify-between mb-4 text-xs font-display font-extrabold text-slate-400 pb-3 border-b border-white/10 flex-wrap gap-2">
+        <div className="flex items-center justify-between mb-3 text-xs font-display font-extrabold text-slate-400 pb-3 border-b border-white/10 flex-wrap gap-2">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400">
               <Zap className="w-3.5 h-3.5 fill-amber-400" />
@@ -565,7 +565,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           </div>
 
           {/* Live Correct / Wrong / Accuracy Counter */}
-          <div className="flex items-center gap-2 text-[11px] font-extrabold">
+          <div className="flex items-center gap-1.5 text-[11px] font-extrabold">
             <span className="text-emerald-400 bg-emerald-500/15 px-2.5 py-1 rounded-full border border-emerald-500/30">
               ✅ {correctCount}
             </span>
@@ -577,7 +577,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
             </span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {config.timeModeSeconds > 0 && (
               <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full border ${
                 timeLeft <= 10
