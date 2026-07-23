@@ -1,14 +1,11 @@
 import { useState, useEffect } from 'react';
 import { BackgroundCanvas } from './components/BackgroundCanvas';
-import { Navbar } from './components/Navbar';
 import { GeographyHome } from './components/geography/GeographyHome';
 import { CasualCategoriesGrid } from './components/CasualCategoriesGrid';
 import { GameGrid } from './components/GameGrid';
 import { GameModal } from './components/GameModal';
-import { Footer } from './components/Footer';
 import { GAMES_DATA } from './data/gamesData';
 import type { GameItem } from './data/gamesData';
-import { sounds } from './services/audio';
 
 function App() {
   // Navigation Tab State: 'home' | 'geography' | 'casual'
@@ -21,7 +18,7 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   // Theme State
-  const [isDark, setIsDark] = useState<boolean>(() => {
+  const [isDark] = useState<boolean>(() => {
     const saved = localStorage.getItem('miniarcade_theme');
     if (saved !== null) return saved === 'dark';
     return true; // Default to sleek dark theme
@@ -36,18 +33,6 @@ function App() {
       localStorage.setItem('miniarcade_theme', 'light');
     }
   }, [isDark]);
-
-  const toggleTheme = () => {
-    setIsDark((prev) => !prev);
-  };
-
-  // Mute Sound State
-  const [isMuted, setIsMuted] = useState<boolean>(sounds.getMuted());
-
-  const toggleMute = () => {
-    const nextMuted = sounds.toggleMute();
-    setIsMuted(nextMuted);
-  };
 
   // Favorites state
   const [favorites, setFavorites] = useState<string[]>(() => {
@@ -83,27 +68,12 @@ function App() {
   });
 
   return (
-    <div className="relative min-h-screen flex flex-col selection:bg-[#6366F1]/20 selection:text-[#6366F1]">
+    <div className="relative min-h-screen flex flex-col selection:bg-[#6366F1]/20 selection:text-[#6366F1] py-4">
       {/* Dynamic Animated Canvas Backdrop */}
       <BackgroundCanvas isDark={isDark} />
 
-      {/* Top Navbar */}
-      <Navbar
-        activeTab={activeTab}
-        onSelectTab={(tab) => {
-          setActiveTab(tab);
-          setSelectedCategory(null);
-        }}
-        searchQuery={searchQuery}
-        onSearchChange={(q) => setSearchQuery(q)}
-        isDark={isDark}
-        onToggleTheme={toggleTheme}
-        isMuted={isMuted}
-        onToggleMute={toggleMute}
-      />
-
       {/* Main Page Body Layout */}
-      <main className="flex-grow z-10 pt-2 sm:pt-4">
+      <main className="flex-grow z-10">
         {/* 1. Geography Section (Shown on Home or Geography Tab) */}
         {(activeTab === 'home' || activeTab === 'geography') && (
           <GeographyHome
@@ -136,9 +106,6 @@ function App() {
           </>
         )}
       </main>
-
-      {/* Footer */}
-      <Footer onSelectTab={(tab) => setActiveTab(tab)} />
 
       {/* Casual Arcade Game Modal Overlay */}
       <GameModal game={activeModalGame} onClose={() => setActiveModalGame(null)} />
