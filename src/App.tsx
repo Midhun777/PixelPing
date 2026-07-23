@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
 import { BackgroundCanvas } from './components/BackgroundCanvas';
 import { Navbar } from './components/Navbar';
-import { HeroSection } from './components/HeroSection';
 import { GeographyHome } from './components/geography/GeographyHome';
 import { CasualCategoriesGrid } from './components/CasualCategoriesGrid';
 import { GameGrid } from './components/GameGrid';
 import { GameModal } from './components/GameModal';
-import { FeatureBanner } from './components/FeatureBanner';
 import { Footer } from './components/Footer';
 import { GAMES_DATA } from './data/gamesData';
 import type { GameItem } from './data/gamesData';
@@ -105,23 +103,7 @@ function App() {
       />
 
       {/* Main Page Body Layout */}
-      <main className="flex-grow z-10">
-        {/* Render Hero Banner only on Home or when search is empty */}
-        {activeTab === 'home' && !searchQuery && (
-          <HeroSection
-            onExploreGeography={() => {
-              setActiveTab('geography');
-              const el = document.getElementById('geography-games');
-              el?.scrollIntoView({ behavior: 'smooth' });
-            }}
-            onExploreAllGames={() => {
-              setActiveTab('casual');
-              const el = document.getElementById('all-games-categories');
-              el?.scrollIntoView({ behavior: 'smooth' });
-            }}
-          />
-        )}
-
+      <main className="flex-grow z-10 pt-2 sm:pt-4">
         {/* 1. Geography Section (Shown on Home or Geography Tab) */}
         {(activeTab === 'home' || activeTab === 'geography') && (
           <GeographyHome
@@ -153,14 +135,6 @@ function App() {
             />
           </>
         )}
-
-        {/* 3. GeoPlay Feature Callout Banner */}
-        <FeatureBanner
-          onStartPlayingClick={() => {
-            setActiveTab('geography');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-        />
       </main>
 
       {/* Footer */}

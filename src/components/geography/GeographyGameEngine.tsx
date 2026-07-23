@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { Heart, Clock, Zap, XCircle, Send } from 'lucide-react';
+import { Heart, Clock, Zap, XCircle, Send, ArrowLeft, RotateCcw, Flame } from 'lucide-react';
 import { COUNTRIES, getSmartDistractors, fuzzyMatch } from '../../data/geographyData';
 import type { CountryData, GeographyGameMeta } from '../../data/geographyData';
 import type { GameSetupConfig } from './GameSetupModal';
@@ -27,19 +27,18 @@ interface QuestionItem {
 
 export const CountryFlagImage: React.FC<{ country: CountryData; className?: string }> = ({
   country,
-  className = 'w-28 h-18 sm:w-36 sm:h-24 object-cover rounded-2xl shadow-xl border-2 border-white/20',
+  className = 'w-32 h-20 sm:w-44 sm:h-28 object-cover rounded-2xl shadow-2xl border-2 border-white/20 hover:scale-105 transition-transform duration-300',
 }) => {
   const [useFallback, setUseFallback] = useState(false);
   const flagCode = (country.iso2 || country.id).toLowerCase();
   const cdnUrl = `https://flagcdn.com/w320/${flagCode}.png`;
 
-  // Always reset fallback state when country changes
   useEffect(() => {
     setUseFallback(false);
   }, [country.id, country.iso2]);
 
   if (useFallback) {
-    return <span className="text-6xl select-none">{country.flag}</span>;
+    return <span className="text-7xl sm:text-8xl select-none">{country.flag}</span>;
   }
 
   return (
@@ -49,6 +48,8 @@ export const CountryFlagImage: React.FC<{ country: CountryData; className?: stri
       alt={`${country.name} Flag`}
       onError={() => setUseFallback(true)}
       className={className}
+      decoding="async"
+      loading="eager"
     />
   );
 };
@@ -133,14 +134,14 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
         const options = [...distractors, randomCountry.capital].sort(() => 0.5 - Math.random());
         return {
           type: 'capital_guess',
-          prompt: `What is the capital city of ${randomCountry.name}?`,
+          prompt: `What is the official capital city of ${randomCountry.name}?`,
           correctAnswer: randomCountry.capital,
           options,
           targetCountry: randomCountry,
           displayElement: (
-            <div className="flex items-center gap-4">
-              <CountryFlagImage key={randomCountry.id} country={randomCountry} className="w-16 h-11 object-cover rounded-lg shadow" />
-              <span className="font-display font-extrabold text-2xl text-white">{randomCountry.name}</span>
+            <div className="flex flex-col items-center gap-3">
+              <CountryFlagImage key={randomCountry.id} country={randomCountry} className="w-24 h-15 object-cover rounded-xl shadow-lg border border-white/20" />
+              <span className="font-display font-black text-2xl sm:text-3xl text-white">{randomCountry.name}</span>
             </div>
           ),
         };
@@ -151,11 +152,18 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
         const options = [...distractors, randomCountry.name].sort(() => 0.5 - Math.random());
         return {
           type: 'country_capital',
-          prompt: `Which country's capital is ${randomCountry.capital}?`,
+          prompt: `Which country's capital city is ${randomCountry.capital}?`,
           correctAnswer: randomCountry.name,
           options,
           targetCountry: randomCountry,
-          displayElement: <span className="font-display font-extrabold text-3xl text-amber-400">🏛️ {randomCountry.capital}</span>,
+          displayElement: (
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-16 h-16 rounded-3xl bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-4xl shadow-inner mb-1">
+                🏛️
+              </div>
+              <span className="font-display font-black text-3xl sm:text-4xl text-amber-400">{randomCountry.capital}</span>
+            </div>
+          ),
         };
       }
 
@@ -171,7 +179,14 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           correctAnswer: target.name,
           options,
           targetCountry: target,
-          displayElement: <span className="font-display font-extrabold text-3xl text-cyan-400">🏙️ {famousCity}</span>,
+          displayElement: (
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-16 h-16 rounded-3xl bg-cyan-500/20 border border-cyan-400/30 flex items-center justify-center text-4xl shadow-inner mb-1">
+                🏙️
+              </div>
+              <span className="font-display font-black text-3xl sm:text-4xl text-cyan-400">{famousCity}</span>
+            </div>
+          ),
         };
       }
 
@@ -187,7 +202,14 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           correctAnswer: target.name,
           options,
           targetCountry: target,
-          displayElement: <span className="font-display font-extrabold text-3xl text-purple-400">🗿 {landmarkName}</span>,
+          displayElement: (
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-16 h-16 rounded-3xl bg-purple-500/20 border border-purple-400/30 flex items-center justify-center text-4xl shadow-inner mb-1">
+                🗿
+              </div>
+              <span className="font-display font-black text-2xl sm:text-3xl text-purple-300">{landmarkName}</span>
+            </div>
+          ),
         };
       }
 
@@ -203,7 +225,14 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           correctAnswer: target.name,
           options,
           targetCountry: target,
-          displayElement: <span className="font-display font-extrabold text-3xl text-blue-400">🏔️ {mountainName}</span>,
+          displayElement: (
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-16 h-16 rounded-3xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-4xl shadow-inner mb-1">
+                🏔️
+              </div>
+              <span className="font-display font-black text-2xl sm:text-3xl text-blue-300">{mountainName}</span>
+            </div>
+          ),
         };
       }
 
@@ -219,7 +248,14 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           correctAnswer: target.name,
           options,
           targetCountry: target,
-          displayElement: <span className="font-display font-extrabold text-3xl text-teal-400">🌊 {riverName}</span>,
+          displayElement: (
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-16 h-16 rounded-3xl bg-teal-500/20 border border-teal-400/30 flex items-center justify-center text-4xl shadow-inner mb-1">
+                🌊
+              </div>
+              <span className="font-display font-black text-2xl sm:text-3xl text-teal-300">{riverName}</span>
+            </div>
+          ),
         };
       }
 
@@ -240,15 +276,15 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           targetCountry: randomCountry,
           secondaryCountry: otherCountry,
           displayElement: (
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 w-full py-2">
-              <div className="flex items-center gap-2.5 bg-white/5 px-4 py-2 rounded-2xl border border-white/10">
-                <CountryFlagImage key={randomCountry.id} country={randomCountry} className="w-12 h-8 object-cover rounded-md shadow" />
-                <span className="font-extrabold text-sm text-white">{randomCountry.name}</span>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full py-2">
+              <div className="flex items-center gap-3 bg-white/10 px-5 py-3 rounded-2xl border border-white/15 shadow-lg w-full sm:w-auto justify-center">
+                <CountryFlagImage key={randomCountry.id} country={randomCountry} className="w-14 h-9 object-cover rounded-lg shadow" />
+                <span className="font-display font-extrabold text-base text-white">{randomCountry.name}</span>
               </div>
-              <span className="text-amber-400 font-black px-2.5 py-1 bg-amber-400/20 rounded-full border border-amber-400/30 text-xs">VS</span>
-              <div className="flex items-center gap-2.5 bg-white/5 px-4 py-2 rounded-2xl border border-white/10">
-                <CountryFlagImage key={otherCountry.id} country={otherCountry} className="w-12 h-8 object-cover rounded-md shadow" />
-                <span className="font-extrabold text-sm text-white">{otherCountry.name}</span>
+              <span className="text-amber-400 font-black px-3 py-1 bg-amber-400/20 rounded-full border border-amber-400/40 text-xs shadow-md">VS</span>
+              <div className="flex items-center gap-3 bg-white/10 px-5 py-3 rounded-2xl border border-white/15 shadow-lg w-full sm:w-auto justify-center">
+                <CountryFlagImage key={otherCountry.id} country={otherCountry} className="w-14 h-9 object-cover rounded-lg shadow" />
+                <span className="font-display font-extrabold text-base text-white">{otherCountry.name}</span>
               </div>
             </div>
           ),
@@ -264,9 +300,9 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
         options,
         targetCountry: randomCountry,
         displayElement: (
-          <div className="flex items-center gap-3">
-            <CountryFlagImage key={randomCountry.id} country={randomCountry} className="w-16 h-11 object-cover rounded-lg shadow" />
-            <span className="font-display font-extrabold text-2xl text-white">{randomCountry.name}</span>
+          <div className="flex items-center gap-4">
+            <CountryFlagImage key={randomCountry.id} country={randomCountry} className="w-20 h-13 object-cover rounded-xl shadow-lg" />
+            <span className="font-display font-extrabold text-2xl sm:text-3xl text-white">{randomCountry.name}</span>
           </div>
         ),
       };
@@ -380,108 +416,186 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
     );
   }
 
+  // Progress Bar percentage
+  const progressPercent = config.questionCount > 0
+    ? Math.min(100, Math.round(((questionIndex + 1) / config.questionCount) * 100))
+    : 100;
+
+  const letterLabels = ['A', 'B', 'C', 'D'];
+
   return (
-    <div className="w-full max-w-lg mx-auto bg-[#0F1523]/95 rounded-[32px] p-6 sm:p-8 border border-white/15 shadow-2xl relative overflow-hidden text-white select-none backdrop-blur-2xl">
-      {/* Top Header Controls Bar */}
-      <div className="flex items-center justify-between mb-5 text-xs font-extrabold text-slate-400 pb-3 border-b border-white/10 font-display">
-        <div className="flex items-center gap-1.5 text-amber-400">
-          <Zap className="w-4 h-4 fill-amber-400" />
-          <span>{score} PTS</span>
-          {streak > 1 && <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 font-extrabold">🔥 {streak}x</span>}
-        </div>
-
-        {config.questionCount > 0 && (
-          <span>
-            Q {questionIndex + 1} / {config.questionCount}
-          </span>
-        )}
-
-        {config.timeModeSeconds > 0 && (
-          <div className="flex items-center gap-1 text-cyan-400">
-            <Clock className="w-4 h-4" />
-            <span>{timeLeft}s</span>
-          </div>
-        )}
-
-        {config.lives > 0 && (
-          <div className="flex items-center gap-1 text-rose-400">
-            <Heart className="w-4 h-4 fill-rose-400" />
-            <span>{livesRemaining}</span>
-          </div>
-        )}
-      </div>
-
-      {/* Main Question Display Box */}
-      <div className="flex flex-col items-center justify-center text-center my-6 min-h-[170px] p-6 rounded-3xl bg-white/5 border border-white/10 relative">
-        <h3 className="font-display font-bold text-lg text-slate-200 mb-4">{currentQuestion.prompt}</h3>
-        {currentQuestion.displayElement}
-      </div>
-
-      {/* Answer Options Body */}
-      {config.answerMode === 'multiple_choice' ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {currentQuestion.options?.map((option, i) => {
-            const isSelected = selectedOption === option;
-            const isCorrectOption = option === currentQuestion.correctAnswer;
-
-            let btnStyle = 'bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20';
-            if (feedbackState !== 'none') {
-              if (isCorrectOption) {
-                btnStyle = 'bg-[#10B981] text-slate-950 border-[#10B981] font-black scale-105 shadow-xl';
-              } else if (isSelected && !isCorrectOption) {
-                btnStyle = 'bg-rose-500 text-white border-rose-500 font-black animate-shake';
-              } else {
-                btnStyle = 'opacity-40 bg-white/5 border-white/5';
-              }
-            }
-
-            return (
-              <button
-                key={i}
-                type="button"
-                onClick={() => handleAnswerSubmit(option)}
-                className={`py-3.5 px-4 rounded-2xl font-display font-extrabold text-sm flex items-center justify-center gap-2 border transition-all duration-200 btn-tactile ${btnStyle}`}
-              >
-                <span>{option}</span>
-              </button>
-            );
-          })}
-        </div>
-      ) : (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (typedInput.trim()) handleAnswerSubmit(typedInput.trim());
+    <div className="w-full max-w-xl mx-auto px-4 py-4 select-none">
+      {/* Top Header Control Navigation */}
+      <div className="flex items-center justify-between gap-3 mb-4">
+        <button
+          onClick={() => {
+            sounds.playPop();
+            onReturnHome();
           }}
-          className="flex flex-col gap-3"
+          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full glass-card border border-white/10 text-xs font-display font-extrabold text-slate-300 hover:text-white hover:bg-white/10 transition-all btn-tactile"
         >
-          <div className="relative">
-            <input
-              type="text"
-              value={typedInput}
-              onChange={(e) => setTypedInput(e.target.value)}
-              placeholder="Type country name here..."
-              disabled={feedbackState !== 'none'}
-              autoFocus
-              className="w-full bg-slate-900 text-white placeholder-slate-500 rounded-2xl p-4 pr-12 text-base font-bold border border-white/20 focus:outline-none focus:border-[#6366F1]"
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Exit Game</span>
+        </button>
+
+        <div className="flex items-center gap-2">
+          {/* Category Badge */}
+          <span className="px-3 py-1 rounded-full bg-[#6366F1]/20 border border-[#6366F1]/40 text-[#818CF8] text-[11px] font-extrabold uppercase tracking-wider font-display">
+            {game.category}
+          </span>
+
+          <button
+            onClick={() => {
+              sounds.playPop();
+              onChangeSettings();
+            }}
+            title="Session Settings"
+            className="w-8 h-8 rounded-full glass-card border border-white/10 flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/10 transition-all btn-tactile"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Main Game Screen Card Container */}
+      <div className="bg-[#0F1523]/95 rounded-[32px] p-6 sm:p-8 border border-white/15 shadow-2xl relative overflow-hidden text-white backdrop-blur-2xl">
+        {/* Ambient Top Glow */}
+        <div className={`absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-gradient-to-br ${game.gradient} opacity-20 blur-3xl pointer-events-none`} />
+
+        {/* Animated Progress Bar */}
+        {config.questionCount > 0 && (
+          <div className="w-full bg-white/10 h-2 rounded-full mb-5 overflow-hidden p-0.5 border border-white/10">
+            <div
+              className="bg-gradient-to-r from-[#6366F1] via-[#10B981] to-[#F59E0B] h-full rounded-full transition-all duration-500 shadow-sm"
+              style={{ width: `${progressPercent}%` }}
             />
-            <button
-              type="submit"
-              disabled={!typedInput.trim() || feedbackState !== 'none'}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-xl bg-[#6366F1] text-white font-bold flex items-center justify-center disabled:opacity-30 btn-tactile"
-            >
-              <Send className="w-4 h-4" />
-            </button>
+          </div>
+        )}
+
+        {/* Score & Game Ticker Bar */}
+        <div className="flex items-center justify-between mb-5 text-xs font-display font-extrabold text-slate-400 pb-3 border-b border-white/10">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400">
+              <Zap className="w-3.5 h-3.5 fill-amber-400" />
+              <span>{score} PTS</span>
+            </div>
+
+            {streak > 1 && (
+              <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-rose-500/20 border border-rose-500/30 text-rose-300 animate-bounce">
+                <Flame className="w-3.5 h-3.5 fill-rose-400" />
+                <span>{streak}x</span>
+              </div>
+            )}
           </div>
 
-          {feedbackState === 'wrong' && (
-            <div className="p-3 rounded-xl bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs font-bold flex items-center gap-2">
-              <XCircle className="w-4 h-4" />
-              <span>Correct Answer: {currentQuestion.correctAnswer}</span>
-            </div>
+          {config.questionCount > 0 && (
+            <span className="text-slate-300 font-extrabold">
+              Q {questionIndex + 1} / {config.questionCount}
+            </span>
           )}
-        </form>
-      )}
+
+          <div className="flex items-center gap-3">
+            {config.timeModeSeconds > 0 && (
+              <div className={`flex items-center gap-1 px-2.5 py-1 rounded-full border ${
+                timeLeft <= 10
+                  ? 'bg-rose-500/20 border-rose-500/40 text-rose-400 animate-pulse'
+                  : 'bg-cyan-500/15 border-cyan-500/30 text-cyan-300'
+              }`}>
+                <Clock className="w-3.5 h-3.5" />
+                <span>{timeLeft}s</span>
+              </div>
+            )}
+
+            {config.lives > 0 && (
+              <div className="flex items-center gap-1 text-rose-400">
+                <Heart className="w-4 h-4 fill-rose-500" />
+                <span>{livesRemaining}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Main Question Display Arena */}
+        <div className="flex flex-col items-center justify-center text-center my-6 min-h-[190px] p-6 rounded-3xl bg-white/5 border border-white/10 relative shadow-inner">
+          <h3 className="font-display font-extrabold text-xl sm:text-2xl text-white mb-5 leading-tight">
+            {currentQuestion.prompt}
+          </h3>
+          {currentQuestion.displayElement}
+        </div>
+
+        {/* Answer Options Body */}
+        {config.answerMode === 'multiple_choice' ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            {currentQuestion.options?.map((option, i) => {
+              const isSelected = selectedOption === option;
+              const isCorrectOption = option === currentQuestion.correctAnswer;
+              const letter = letterLabels[i % letterLabels.length];
+
+              let btnStyle = 'bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20';
+              if (feedbackState !== 'none') {
+                if (isCorrectOption) {
+                  btnStyle = 'bg-[#10B981] text-slate-950 border-[#10B981] font-black scale-105 shadow-xl shadow-[#10B981]/30';
+                } else if (isSelected && !isCorrectOption) {
+                  btnStyle = 'bg-rose-500 text-white border-rose-500 font-black animate-shake shadow-lg shadow-rose-500/30';
+                } else {
+                  btnStyle = 'opacity-30 bg-white/5 border-white/5';
+                }
+              }
+
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => handleAnswerSubmit(option)}
+                  disabled={feedbackState !== 'none'}
+                  className={`py-4 px-4 rounded-2xl font-display font-extrabold text-sm flex items-center justify-between border transition-all duration-200 btn-tactile ${btnStyle}`}
+                >
+                  <span className="flex items-center gap-3">
+                    <span className="w-7 h-7 rounded-xl bg-white/10 flex items-center justify-center text-xs font-black shrink-0">
+                      {letter}
+                    </span>
+                    <span className="text-left font-bold">{option}</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (typedInput.trim()) handleAnswerSubmit(typedInput.trim());
+            }}
+            className="flex flex-col gap-3.5"
+          >
+            <div className="relative">
+              <input
+                type="text"
+                value={typedInput}
+                onChange={(e) => setTypedInput(e.target.value)}
+                placeholder="Type country name here..."
+                disabled={feedbackState !== 'none'}
+                autoFocus
+                className="w-full bg-slate-900 text-white placeholder-slate-500 rounded-2xl p-4 pr-14 text-base font-bold border border-white/20 focus:outline-none focus:border-[#6366F1]"
+              />
+              <button
+                type="submit"
+                disabled={!typedInput.trim() || feedbackState !== 'none'}
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-[#6366F1] text-white font-bold flex items-center justify-center disabled:opacity-30 btn-tactile shadow-md"
+              >
+                <Send className="w-4 h-4" />
+              </button>
+            </div>
+
+            {feedbackState === 'wrong' && (
+              <div className="p-3.5 rounded-2xl bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs font-extrabold flex items-center gap-2.5 font-display">
+                <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                <span>Correct Answer: {currentQuestion.correctAnswer}</span>
+              </div>
+            )}
+          </form>
+        )}
+      </div>
     </div>
   );
 };
