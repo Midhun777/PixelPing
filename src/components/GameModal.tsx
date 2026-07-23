@@ -7,6 +7,7 @@ import { GeoQuizGame } from './games/GeoQuizGame';
 import { ColorMatchGame } from './games/ColorMatchGame';
 import { Tile2048Game } from './games/Tile2048Game';
 import { TicTacToeGame } from './games/TicTacToeGame';
+import { MathBlitzGame } from './games/MathBlitzGame';
 import { sounds } from '../services/audio';
 
 interface GameModalProps {
@@ -42,6 +43,8 @@ export const GameModal: React.FC<GameModalProps> = ({ game, onClose }) => {
         return <Tile2048Game />;
       case 'tictactoe':
         return <TicTacToeGame />;
+      case 'mathblitz':
+        return <MathBlitzGame />;
       default:
         return <MemoryGame />;
     }
