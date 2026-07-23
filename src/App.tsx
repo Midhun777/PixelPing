@@ -1,21 +1,23 @@
 import { useState, useEffect } from 'react';
+import { Globe, Gamepad2 } from 'lucide-react';
 import { BackgroundCanvas } from './components/BackgroundCanvas';
 import { Navbar } from './components/Navbar';
 import { GeographyHome } from './components/geography/GeographyHome';
 import { CasualCategoriesGrid } from './components/CasualCategoriesGrid';
 import { GameGrid } from './components/GameGrid';
 import { GameModal } from './components/GameModal';
+import { RecentlyPlayedBar } from './components/RecentlyPlayedBar';
 import { UserProfileModal } from './components/profile/UserProfileModal';
 import { GAMES_DATA } from './data/gamesData';
 import type { GameItem } from './data/gamesData';
 import { sounds } from './services/audio';
 
 function App() {
-  // Navigation Tab State: 'home' | 'geography' | 'casual'
-  const [activeTab, setActiveTab] = useState<'home' | 'geography' | 'casual'>('home');
+  // Navigation Tab State: 'geography' | 'casual'
+  const [activeTab, setActiveTab] = useState<'geography' | 'casual'>('geography');
 
   // Live Search Input State
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchQuery] = useState<string>('');
 
   // Selected Category Filter State
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -92,11 +94,6 @@ function App() {
 
       {/* Simple Top Navbar */}
       <Navbar
-        activeTab={activeTab === 'casual' ? 'casual' : 'geography'}
-        onSelectTab={(tab) => {
-          setActiveTab(tab);
-          setSelectedCategory(null);
-        }}
         onOpenProfile={() => setIsProfileOpen(true)}
         isDark={isDark}
         onToggleTheme={toggleTheme}
@@ -105,17 +102,57 @@ function App() {
       />
 
       {/* Main Page Body Layout */}
-      <main className="flex-grow z-10 pt-2 sm:pt-4">
-        {/* 1. Geography Section (Shown on Home or Geography Tab) */}
-        {(activeTab === 'home' || activeTab === 'geography') && (
+      <main className="flex-grow z-10 pt-4 sm:pt-6">
+        {/* Floating Game Type Switcher Pill Bar (Positioned Outside Navbar) */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-6 flex items-center justify-center select-none">
+          <div className="inline-flex items-center gap-1.5 p-1.5 rounded-full glass-card border border-slate-200/80 dark:border-white/15 shadow-xl backdrop-blur-2xl">
+            <button
+              onClick={() => {
+                sounds.playPop();
+                setActiveTab('geography');
+                setSelectedCategory(null);
+              }}
+              className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-display font-extrabold transition-all btn-tactile flex items-center gap-2 ${
+                activeTab === 'geography'
+                  ? 'bg-gradient-to-r from-[#6366F1] to-[#4F46E5] text-white shadow-lg shadow-[#6366F1]/30 scale-105'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <Globe className="w-4 h-4" />
+              <span>Geography Games</span>
+            </button>
+
+            <button
+              onClick={() => {
+                sounds.playPop();
+                setActiveTab('casual');
+                setSelectedCategory(null);
+              }}
+              className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-display font-extrabold transition-all btn-tactile flex items-center gap-2 ${
+                activeTab === 'casual'
+                  ? 'bg-gradient-to-r from-[#6366F1] to-[#4F46E5] text-white shadow-lg shadow-[#6366F1]/30 scale-105'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <Gamepad2 className="w-4 h-4" />
+              <span>Casual Arcade</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Recently Played History Feed Bar */}
+        <RecentlyPlayedBar />
+
+        {/* 1. Geography Section */}
+        {activeTab === 'geography' && (
           <GeographyHome
             searchQuery={searchQuery}
             onViewAllClick={() => setActiveTab('geography')}
           />
         )}
 
-        {/* 2. Casual Arcade & All Games Categories Section (Shown on Home or Casual Tab) */}
-        {(activeTab === 'home' || activeTab === 'casual') && (
+        {/* 2. Casual Arcade & Categories Section */}
+        {activeTab === 'casual' && (
           <>
             <CasualCategoriesGrid
               onCategoryClick={(catId) => {
@@ -131,7 +168,6 @@ function App() {
               onToggleFavorite={toggleFavorite}
               onPlayGame={handleLaunchGame}
               onResetFilters={() => {
-                setSearchQuery('');
                 setSelectedCategory(null);
               }}
             />
