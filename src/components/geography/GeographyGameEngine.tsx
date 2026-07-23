@@ -26,9 +26,14 @@ interface QuestionItem {
   displayElement?: React.ReactNode;
 }
 
-export const CountryFlagImage: React.FC<{ country: CountryData; className?: string }> = ({
+export const CountryFlagImage: React.FC<{
+  country: CountryData;
+  className?: string;
+  variant?: 'main' | 'compact';
+}> = ({
   country,
-  className = 'w-32 h-20 sm:w-44 sm:h-28 object-cover rounded-2xl shadow-2xl border-2 border-white/20 hover:scale-105 transition-transform duration-300',
+  className = 'max-h-full max-w-full object-contain rounded-md drop-shadow-2xl hover:scale-105 transition-transform duration-300',
+  variant = 'main',
 }) => {
   const [useFallback, setUseFallback] = useState(false);
   const flagCode = (country.iso2 || country.id).toLowerCase();
@@ -39,19 +44,37 @@ export const CountryFlagImage: React.FC<{ country: CountryData; className?: stri
   }, [country.id, country.iso2]);
 
   if (useFallback) {
-    return <span className="text-7xl sm:text-8xl select-none">{country.flag}</span>;
+    return <span className={variant === 'compact' ? 'text-2xl' : 'text-7xl sm:text-8xl select-none'}>{country.flag}</span>;
+  }
+
+  if (variant === 'compact') {
+    return (
+      <div className="h-9 px-2 py-1 rounded-lg bg-[#080C14]/80 border border-white/20 shadow-md flex items-center justify-center min-w-[48px] overflow-hidden backdrop-blur-sm shrink-0">
+        <img
+          key={`${country.id}-${flagCode}`}
+          src={cdnUrl}
+          alt={`${country.name} Flag`}
+          onError={() => setUseFallback(true)}
+          className="max-h-full max-w-full object-contain rounded-sm"
+          decoding="async"
+          loading="eager"
+        />
+      </div>
+    );
   }
 
   return (
-    <img
-      key={`${country.id}-${flagCode}`}
-      src={cdnUrl}
-      alt={`${country.name} Flag`}
-      onError={() => setUseFallback(true)}
-      className={className}
-      decoding="async"
-      loading="eager"
-    />
+    <div className="p-3 rounded-2xl bg-[#080C14]/90 border border-white/20 shadow-2xl flex items-center justify-center min-w-[200px] sm:min-w-[280px] max-w-[320px] h-36 sm:h-44 overflow-hidden backdrop-blur-md relative group">
+      <img
+        key={`${country.id}-${flagCode}`}
+        src={cdnUrl}
+        alt={`${country.name} Flag`}
+        onError={() => setUseFallback(true)}
+        className={className}
+        decoding="async"
+        loading="eager"
+      />
+    </div>
   );
 };
 
@@ -141,7 +164,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           targetCountry: randomCountry,
           displayElement: (
             <div className="flex flex-col items-center gap-3">
-              <CountryFlagImage key={randomCountry.id} country={randomCountry} className="w-24 h-15 object-cover rounded-xl shadow-lg border border-white/20" />
+              <CountryFlagImage key={randomCountry.id} country={randomCountry} variant="compact" />
               <span className="font-display font-black text-2xl sm:text-3xl text-white">{randomCountry.name}</span>
             </div>
           ),
@@ -279,12 +302,12 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           displayElement: (
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full py-2">
               <div className="flex items-center gap-3 bg-white/10 px-5 py-3 rounded-2xl border border-white/15 shadow-lg w-full sm:w-auto justify-center">
-                <CountryFlagImage key={randomCountry.id} country={randomCountry} className="w-14 h-9 object-cover rounded-lg shadow" />
+                <CountryFlagImage key={randomCountry.id} country={randomCountry} variant="compact" />
                 <span className="font-display font-extrabold text-base text-white">{randomCountry.name}</span>
               </div>
               <span className="text-amber-400 font-black px-3 py-1 bg-amber-400/20 rounded-full border border-amber-400/40 text-xs shadow-md">VS</span>
               <div className="flex items-center gap-3 bg-white/10 px-5 py-3 rounded-2xl border border-white/15 shadow-lg w-full sm:w-auto justify-center">
-                <CountryFlagImage key={otherCountry.id} country={otherCountry} className="w-14 h-9 object-cover rounded-lg shadow" />
+                <CountryFlagImage key={otherCountry.id} country={otherCountry} variant="compact" />
                 <span className="font-display font-extrabold text-base text-white">{otherCountry.name}</span>
               </div>
             </div>
