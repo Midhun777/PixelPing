@@ -478,12 +478,23 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full glass-card border border-white/10 text-xs font-display font-extrabold text-slate-300 hover:text-white hover:bg-white/10 transition-all btn-tactile"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Exit Game</span>
+          <span>Exit</span>
+        </button>
+
+        {/* Finish / End Game Button */}
+        <button
+          onClick={() => {
+            sounds.playVictory();
+            setIsGameOver(true);
+          }}
+          className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-display font-black text-xs shadow-lg shadow-emerald-500/25 btn-tactile"
+        >
+          <span>Finish Game 🏁</span>
         </button>
 
         <div className="flex items-center gap-2">
           {/* Category Badge */}
-          <span className="px-3 py-1 rounded-full bg-[#6366F1]/20 border border-[#6366F1]/40 text-[#818CF8] text-[11px] font-extrabold uppercase tracking-wider font-display">
+          <span className="px-3 py-1 rounded-full bg-[#6366F1]/20 border border-[#6366F1]/40 text-[#818CF8] text-[11px] font-extrabold uppercase tracking-wider font-display hidden sm:inline">
             {game.category}
           </span>
 
@@ -516,7 +527,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
         )}
 
         {/* Score & Game Ticker Bar */}
-        <div className="flex items-center justify-between mb-5 text-xs font-display font-extrabold text-slate-400 pb-3 border-b border-white/10">
+        <div className="flex items-center justify-between mb-4 text-xs font-display font-extrabold text-slate-400 pb-3 border-b border-white/10 flex-wrap gap-2">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400">
               <Zap className="w-3.5 h-3.5 fill-amber-400" />
@@ -531,11 +542,18 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
             )}
           </div>
 
-          {config.questionCount > 0 && (
-            <span className="text-slate-300 font-extrabold">
-              Q {questionIndex + 1} / {config.questionCount}
+          {/* Live Correct / Wrong / Accuracy Counter */}
+          <div className="flex items-center gap-2 text-[11px] font-extrabold">
+            <span className="text-emerald-400 bg-emerald-500/15 px-2.5 py-1 rounded-full border border-emerald-500/30">
+              ✅ {correctCount}
             </span>
-          )}
+            <span className="text-rose-400 bg-rose-500/15 px-2.5 py-1 rounded-full border border-rose-500/30">
+              ❌ {wrongCount}
+            </span>
+            <span className="text-indigo-300 bg-indigo-500/15 px-2.5 py-1 rounded-full border border-indigo-500/30">
+              🎯 {correctCount + wrongCount > 0 ? Math.round((correctCount / (correctCount + wrongCount)) * 100) : 0}% Acc
+            </span>
+          </div>
 
           <div className="flex items-center gap-3">
             {config.timeModeSeconds > 0 && (
@@ -558,9 +576,22 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
           </div>
         </div>
 
+        {/* Live Country Pool & Deck Ticker Bar */}
+        <div className="flex items-center justify-between text-[11px] font-display font-extrabold text-slate-400 mb-4 px-1">
+          <span className="flex items-center gap-1 text-emerald-400">
+            <span>🌍 Guessed:</span>
+            <span className="text-white font-black">{questionIndex + 1} / {pool.length} Countries</span>
+          </span>
+
+          <span className="flex items-center gap-1 text-cyan-400">
+            <span>📦 Deck Remaining:</span>
+            <span className="text-white font-black">{Math.max(0, pool.length - (questionIndex + 1))} Left</span>
+          </span>
+        </div>
+
         {/* Main Question Display Arena */}
-        <div className="flex flex-col items-center justify-center text-center my-6 min-h-[190px] p-6 rounded-3xl bg-white/5 border border-white/10 relative shadow-inner">
-          <h3 className="font-display font-extrabold text-xl sm:text-2xl text-white mb-5 leading-tight">
+        <div className="flex flex-col items-center justify-center text-center my-4 min-h-[180px] p-5 rounded-3xl bg-white/5 border border-white/10 relative shadow-inner">
+          <h3 className="font-display font-extrabold text-xl sm:text-2xl text-white mb-4 leading-tight">
             {currentQuestion.prompt}
           </h3>
           {currentQuestion.displayElement}
@@ -568,7 +599,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
 
         {/* Answer Options Body */}
         {config.answerMode === 'multiple_choice' ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {currentQuestion.options?.map((option, i) => {
               const isSelected = selectedOption === option;
               const isCorrectOption = option === currentQuestion.correctAnswer;
@@ -591,7 +622,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
                   type="button"
                   onClick={() => handleAnswerSubmit(option)}
                   disabled={feedbackState !== 'none'}
-                  className={`py-4 px-4 rounded-2xl font-display font-extrabold text-sm flex items-center justify-between border transition-all duration-200 btn-tactile ${btnStyle}`}
+                  className={`py-3.5 px-4 rounded-2xl font-display font-extrabold text-sm flex items-center justify-between border transition-all duration-200 btn-tactile ${btnStyle}`}
                 >
                   <span className="flex items-center gap-3">
                     <span className="w-7 h-7 rounded-xl bg-white/10 flex items-center justify-center text-xs font-black shrink-0">
@@ -637,6 +668,25 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
               </div>
             )}
           </form>
+        )}
+
+        {/* Educational Country Fact Card (Displayed on Answer Feedback) */}
+        {feedbackState !== 'none' && (
+          <div className="mt-4 p-4 rounded-2xl bg-white/10 border border-white/20 text-xs font-display font-medium text-slate-200 animate-fade-in flex flex-col gap-1.5 shadow-xl backdrop-blur-md">
+            <div className="flex items-center justify-between font-extrabold text-amber-400 pb-1.5 border-b border-white/10">
+              <span className="text-sm">💡 Country Educational Fact Card</span>
+              <span>{currentQuestion.targetCountry.name}</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 pt-1 font-bold">
+              <span className="text-slate-300">🏛️ Capital: <strong className="text-white">{currentQuestion.targetCountry.capital}</strong></span>
+              <span className="text-slate-300">🌍 Region: <strong className="text-white">{currentQuestion.targetCountry.continent}</strong></span>
+              <span className="text-slate-300">👥 Population: <strong className="text-white">{currentQuestion.targetCountry.population}M</strong></span>
+              {currentQuestion.targetCountry.landmark && (
+                <span className="text-slate-300">🗿 Landmark: <strong className="text-white">{currentQuestion.targetCountry.landmark}</strong></span>
+              )}
+            </div>
+          </div>
         )}
       </div>
     </div>
