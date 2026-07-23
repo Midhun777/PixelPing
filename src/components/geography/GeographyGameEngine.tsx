@@ -319,13 +319,13 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
   }
 
   return (
-    <div className="w-full max-w-lg mx-auto bg-slate-900/95 rounded-[32px] p-6 sm:p-8 border border-white/20 shadow-2xl relative overflow-hidden text-white select-none">
+    <div className="w-full max-w-lg mx-auto bg-[#0F1523]/95 rounded-[32px] p-6 sm:p-8 border border-white/15 shadow-2xl relative overflow-hidden text-white select-none backdrop-blur-2xl">
       {/* Top Header Controls Bar */}
-      <div className="flex items-center justify-between mb-5 text-xs font-bold text-slate-400 pb-3 border-b border-white/10">
+      <div className="flex items-center justify-between mb-5 text-xs font-extrabold text-slate-400 pb-3 border-b border-white/10 font-display">
         <div className="flex items-center gap-1.5 text-amber-400">
           <Zap className="w-4 h-4 fill-amber-400" />
           <span>{score} PTS</span>
-          {streak > 1 && <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300">🔥 {streak}x</span>}
+          {streak > 1 && <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 font-extrabold">🔥 {streak}x</span>}
         </div>
 
         {config.questionCount > 0 && (
@@ -365,7 +365,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
             let btnStyle = 'bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20';
             if (feedbackState !== 'none') {
               if (isCorrectOption) {
-                btnStyle = 'bg-[#27D980] text-slate-950 border-[#27D980] font-black scale-105 shadow-xl';
+                btnStyle = 'bg-[#10B981] text-slate-950 border-[#10B981] font-black scale-105 shadow-xl';
               } else if (isSelected && !isCorrectOption) {
                 btnStyle = 'bg-rose-500 text-white border-rose-500 font-black animate-shake';
               } else {
@@ -378,7 +378,7 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
                 key={i}
                 type="button"
                 onClick={() => handleAnswerSubmit(option)}
-                className={`py-3.5 px-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 border transition-all duration-200 ${btnStyle}`}
+                className={`py-3.5 px-4 rounded-2xl font-display font-extrabold text-sm flex items-center justify-center gap-2 border transition-all duration-200 btn-tactile ${btnStyle}`}
               >
                 <span>{option}</span>
               </button>
@@ -401,12 +401,12 @@ export const GeographyGameEngine: React.FC<GeographyGameEngineProps> = ({
               placeholder="Type country name here..."
               disabled={feedbackState !== 'none'}
               autoFocus
-              className="w-full bg-slate-800 text-white placeholder-slate-500 rounded-2xl p-4 pr-12 text-base font-bold border border-white/20 focus:outline-none focus:border-[#5B7FFF]"
+              className="w-full bg-slate-900 text-white placeholder-slate-500 rounded-2xl p-4 pr-12 text-base font-bold border border-white/20 focus:outline-none focus:border-[#6366F1]"
             />
             <button
               type="submit"
               disabled={!typedInput.trim() || feedbackState !== 'none'}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-xl bg-[#5B7FFF] text-[#0F1115] font-bold flex items-center justify-center disabled:opacity-30"
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-xl bg-[#6366F1] text-white font-bold flex items-center justify-center disabled:opacity-30 btn-tactile"
             >
               <Send className="w-4 h-4" />
             </button>

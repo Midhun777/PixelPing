@@ -2,39 +2,43 @@
 
 @layer base {
   :root {
-    --bg-primary: #FAFAFA;
-    --bg-secondary: #F4F5F7;
-    --bg-card: #FFFFFF;
-    --text-primary: #111827;
-    --text-muted: #6B7280;
-    --border-color: rgba(0, 0, 0, 0.06);
-    --brand-primary: #5B7FFF;
-    --brand-secondary: #27D980;
-    --brand-accent: #FFD84D;
-    --brand-danger: #FF5C5C;
+    --bg-primary: #F8FAFC;
+    --bg-secondary: #F1F5F9;
+    --bg-card: rgba(255, 255, 255, 0.9);
+    --text-primary: #0F172A;
+    --text-muted: #64748B;
+    --border-color: rgba(15, 23, 42, 0.08);
+    --brand-primary: #6366F1;
+    --brand-secondary: #10B981;
+    --brand-accent: #F59E0B;
+    --brand-danger: #F43F5E;
+    --card-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
   }
 
   .dark {
-    --bg-primary: #0F1115;
-    --bg-secondary: #161922;
-    --bg-card: #1E222D;
-    --text-primary: #F3F4F6;
-    --text-muted: #9CA3AF;
-    --border-color: rgba(255, 255, 255, 0.08);
-    --brand-primary: #6C8DFF;
-    --brand-secondary: #2FE38B;
-    --brand-accent: #FFE066;
-    --brand-danger: #FF6B6B;
+    --bg-primary: #080B11;
+    --bg-secondary: #0F1523;
+    --bg-card: rgba(17, 22, 37, 0.85);
+    --text-primary: #F8FAFC;
+    --text-muted: #94A3B8;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --brand-primary: #818CF8;
+    --brand-secondary: #34D399;
+    --brand-accent: #FBBF24;
+    --brand-danger: #FB7185;
+    --card-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6), 0 4px 12px -2px rgba(0, 0, 0, 0.4);
   }
 }
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 h1, h2, h3, h4, .font-display {
-  font-family: 'Space Grotesk', 'Inter', sans-serif;
-  letter-spacing: -0.02em;
+  font-family: 'Outfit', 'Space Grotesk', sans-serif;
+  letter-spacing: -0.025em;
 }
 
 /* Custom Scrollbar */
@@ -48,98 +52,82 @@ h1, h2, h3, h4, .font-display {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.4);
+  background: rgba(148, 163, 184, 0.3);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(107, 114, 128, 0.7);
+  background: rgba(148, 163, 184, 0.6);
 }
 
-/* Glassmorphism */
+/* Premium Glassmorphism */
 .glass-pill {
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(15, 23, 42, 0.08);
 }
 
 .dark .glass-pill {
-  background: rgba(22, 25, 34, 0.75);
+  background: rgba(15, 21, 35, 0.8);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
 }
 
-.dark .glass-card {
-  background: rgba(30, 34, 45, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+/* Playful Tactile Buttons */
+.btn-tactile {
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Shine effect on card hover */
-.shine-sweep {
-  position: relative;
-  overflow: hidden;
+.btn-tactile:hover {
+  transform: translateY(-2px) scale(1.02);
 }
 
-.shine-sweep::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    60deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.25) 50%,
-    transparent 70%
-  );
-  transform: translateX(-100%) rotate(25deg);
-  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: none;
+.btn-tactile:active {
+  transform: translateY(1px) scale(0.98);
 }
 
-.shine-sweep:hover::after {
-  transform: translateX(100%) rotate(25deg);
+/* Card Glow Effect */
+.glow-card-indigo:hover {
+  box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.25);
+}
+
+.glow-card-emerald:hover {
+  box-shadow: 0 20px 40px -10px rgba(16, 185, 129, 0.25);
+}
+
+.glow-card-amber:hover {
+  box-shadow: 0 20px 40px -10px rgba(245, 158, 11, 0.25);
 }
 
 /* Animations */
 @keyframes floatSlow {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-12px) rotate(3deg); }
+  50% { transform: translateY(-10px) rotate(3deg); }
 }
 
 @keyframes floatReverse {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(10px) rotate(-3deg); }
+  50% { transform: translateY(8px) rotate(-3deg); }
 }
 
 @keyframes pulseGlow {
-  0%, 100% { opacity: 0.4; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.08); }
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.75; transform: scale(1.06); }
 }
 
-@keyframes diceRoll {
-  0% { transform: rotate(0deg) scale(1); }
-  50% { transform: rotate(360deg) scale(1.25); }
-  100% { transform: rotate(720deg) scale(1); }
-}
-
-@keyframes ripple {
-  0% { transform: scale(0); opacity: 0.6; }
-  100% { transform: scale(4); opacity: 0; }
+@keyframes bounceSubtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
 }
 
 .animate-float-slow {
@@ -154,8 +142,8 @@ h1, h2, h3, h4, .font-display {
   animation: pulseGlow 4s ease-in-out infinite;
 }
 
-.animate-dice-spin {
-  animation: diceRoll 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+.animate-bounce-subtle {
+  animation: bounceSubtle 2s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

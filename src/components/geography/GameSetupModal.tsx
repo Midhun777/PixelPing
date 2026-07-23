@@ -50,10 +50,10 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({ game, onClose, o
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-xl bg-slate-900/95 rounded-[32px] p-6 sm:p-8 border border-white/20 shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh] text-white select-none"
+        className="w-full max-w-xl bg-[#0F1523]/95 rounded-[32px] p-6 sm:p-8 border border-white/15 shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh] text-white select-none backdrop-blur-2xl"
       >
         {/* Ambient Top Glow */}
-        <div className={`absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-gradient-to-br ${game.gradient} opacity-20 blur-3xl pointer-events-none`} />
+        <div className={`absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-gradient-to-br ${game.gradient} opacity-25 blur-3xl pointer-events-none`} />
 
         {/* Modal Header */}
         <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/10 relative z-10">
@@ -64,11 +64,11 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({ game, onClose, o
             <div className="flex flex-col">
               <div className="flex items-center gap-2">
                 <h2 className="font-display font-extrabold text-xl text-white tracking-tight">{game.title}</h2>
-                <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-white/10 text-slate-300">
+                <span className="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-white/10 text-slate-300 uppercase tracking-wider">
                   {game.category}
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mt-0.5">Customize your session setup</p>
+              <p className="text-xs text-slate-400 mt-0.5 font-medium">Customize your session settings</p>
             </div>
           </div>
 
@@ -77,7 +77,7 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({ game, onClose, o
               sounds.playPop();
               onClose();
             }}
-            className="w-9 h-9 rounded-full bg-white/10 hover:bg-rose-500 flex items-center justify-center text-slate-300 transition-all"
+            className="w-9 h-9 rounded-full bg-white/10 hover:bg-rose-500 flex items-center justify-center text-slate-300 transition-all btn-tactile"
           >
             <X className="w-5 h-5" />
           </button>
@@ -87,8 +87,8 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({ game, onClose, o
         <div className="relative z-10 overflow-y-auto no-scrollbar space-y-6 pr-1">
           {/* 1. Answer Mode Toggle */}
           <div>
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-              <HelpCircle className="w-3.5 h-3.5 text-[#5B7FFF]" /> Answer Input Mode
+            <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5 font-display">
+              <HelpCircle className="w-3.5 h-3.5 text-[#6366F1]" /> Answer Input Mode
             </label>
             <div className="grid grid-cols-2 gap-3">
               <button
@@ -97,9 +97,9 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({ game, onClose, o
                   sounds.playPop();
                   setAnswerMode('multiple_choice');
                 }}
-                className={`py-3 px-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border transition-all ${
+                className={`py-3 px-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border transition-all btn-tactile ${
                   answerMode === 'multiple_choice'
-                    ? 'bg-[#5B7FFF] text-white border-[#5B7FFF] shadow-lg shadow-[#5B7FFF]/30 scale-[1.02]'
+                    ? 'bg-[#6366F1] text-white border-[#6366F1] shadow-lg shadow-[#6366F1]/30 scale-[1.02]'
                     : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10'
                 }`}
               >
@@ -112,9 +112,9 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({ game, onClose, o
                   sounds.playPop();
                   setAnswerMode('typing');
                 }}
-                className={`py-3 px-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border transition-all ${
+                className={`py-3 px-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border transition-all btn-tactile ${
                   answerMode === 'typing'
-                    ? 'bg-[#5B7FFF] text-white border-[#5B7FFF] shadow-lg shadow-[#5B7FFF]/30 scale-[1.02]'
+                    ? 'bg-[#6366F1] text-white border-[#6366F1] shadow-lg shadow-[#6366F1]/30 scale-[1.02]'
                     : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10'
                 }`}
               >
@@ -125,7 +125,7 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({ game, onClose, o
 
           {/* 2. Difficulty Chips */}
           <div>
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5 font-display">
               <Settings2 className="w-3.5 h-3.5 text-amber-400" /> Difficulty Level
             </label>
             <div className="grid grid-cols-4 gap-2">
@@ -137,7 +137,7 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({ game, onClose, o
                     sounds.playPop();
                     setDifficulty(diff);
                   }}
-                  className={`py-2.5 rounded-xl text-xs font-bold transition-all border ${
+                  className={`py-2.5 rounded-xl text-xs font-extrabold transition-all border btn-tactile ${
                     difficulty === diff
                       ? 'bg-amber-400 text-slate-950 border-amber-400 shadow-md scale-105'
                       : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10'
@@ -151,7 +151,7 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({ game, onClose, o
 
           {/* 3. Number of Questions */}
           <div>
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5 font-display">
               <HelpCircle className="w-3.5 h-3.5 text-emerald-400" /> Number of Questions
             </label>
             <div className="flex flex-wrap gap-2">
@@ -163,9 +163,9 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({ game, onClose, o
                     sounds.playPop();
                     setQuestionCount(cnt);
                   }}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all border ${
+                  className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all border btn-tactile ${
                     questionCount === cnt
-                      ? 'bg-[#27D980] text-slate-950 border-[#27D980] shadow-md scale-105'
+                      ? 'bg-[#10B981] text-slate-950 border-[#10B981] shadow-md scale-105'
                       : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10'
                   }`}
                 >
@@ -178,7 +178,7 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({ game, onClose, o
           {/* 4. Timer Mode & Lives */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5 font-display">
                 <Clock className="w-3.5 h-3.5 text-cyan-400" /> Timer Mode
               </label>
               <select
@@ -187,7 +187,7 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({ game, onClose, o
                   sounds.playPop();
                   setTimeModeSeconds(Number(e.target.value));
                 }}
-                className="w-full bg-slate-800 text-white rounded-xl p-3 text-xs font-bold border border-white/10 focus:outline-none focus:border-[#5B7FFF]"
+                className="w-full bg-slate-900 text-white rounded-xl p-3 text-xs font-bold border border-white/10 focus:outline-none focus:border-[#6366F1]"
               >
                 <option value={0}>⏳ No Timer (Relaxed)</option>
                 <option value={30}>⚡ 30 Seconds</option>
@@ -198,7 +198,7 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({ game, onClose, o
             </div>
 
             <div>
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5 font-display">
                 <Heart className="w-3.5 h-3.5 text-rose-400" /> Lives Mode
               </label>
               <select
@@ -207,7 +207,7 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({ game, onClose, o
                   sounds.playPop();
                   setLives(Number(e.target.value));
                 }}
-                className="w-full bg-slate-800 text-white rounded-xl p-3 text-xs font-bold border border-white/10 focus:outline-none focus:border-[#5B7FFF]"
+                className="w-full bg-slate-900 text-white rounded-xl p-3 text-xs font-bold border border-white/10 focus:outline-none focus:border-[#6366F1]"
               >
                 <option value={-1}>❤️ Unlimited Lives</option>
                 <option value={5}>❤️❤️❤️❤️❤️ 5 Lives</option>
@@ -219,7 +219,7 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({ game, onClose, o
 
           {/* 5. Region Filter */}
           <div>
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5 font-display">
               <Globe className="w-3.5 h-3.5 text-purple-400" /> Region Filter
             </label>
             <div className="flex flex-wrap gap-2">
@@ -232,7 +232,7 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({ game, onClose, o
                       sounds.playPop();
                       setRegionFilter(reg);
                     }}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                    className={`px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all border btn-tactile ${
                       regionFilter === reg
                         ? 'bg-purple-600 text-white border-purple-500 shadow-md scale-105'
                         : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10'
@@ -250,9 +250,9 @@ export const GameSetupModal: React.FC<GameSetupModalProps> = ({ game, onClose, o
         <div className="pt-5 mt-4 border-t border-white/10 relative z-10">
           <button
             onClick={handleStart}
-            className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#5B7FFF] via-[#27D980] to-[#FFD84D] text-slate-950 font-black text-base shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 uppercase tracking-wider"
+            className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#6366F1] via-[#10B981] to-[#F59E0B] text-white font-display font-black text-base shadow-xl transition-all flex items-center justify-center gap-2 uppercase tracking-wider btn-tactile"
           >
-            <Play className="w-5 h-5 fill-slate-950" />
+            <Play className="w-5 h-5 fill-white" />
             <span>Start Game Now</span>
           </button>
         </div>

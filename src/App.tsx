@@ -7,6 +7,7 @@ import { GeographyHome } from './components/geography/GeographyHome';
 import { GAMES_DATA } from './data/gamesData';
 import type { GameItem } from './data/gamesData';
 import { sounds } from './services/audio';
+import { Compass, Gamepad2 } from 'lucide-react';
 
 function App() {
   // Primary Section Tab State
@@ -64,7 +65,7 @@ function App() {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col selection:bg-[#5B7FFF]/20 selection:text-[#5B7FFF] pb-12">
+    <div className="relative min-h-screen flex flex-col selection:bg-[#6366F1]/20 selection:text-[#6366F1] pb-16">
       {/* Dynamic Animated Particle Grid Canvas */}
       <BackgroundCanvas isDark={isDark} />
 
@@ -79,23 +80,24 @@ function App() {
           onToggleTheme={toggleTheme}
         />
 
-        {/* Primary Platform Section Switcher Bar */}
-        <div className="max-w-md mx-auto px-4 mb-6 relative z-20">
-          <div className="p-1.5 rounded-2xl glass-card border border-white/60 dark:border-white/10 shadow-xl flex items-center justify-center gap-1.5">
+        {/* Primary Platform Section Switcher Floating Capsule */}
+        <div className="max-w-lg mx-auto px-4 mb-8 relative z-20">
+          <div className="p-1.5 rounded-full glass-card border border-slate-200/80 dark:border-white/10 shadow-xl flex items-center justify-center gap-1.5 backdrop-blur-2xl">
             <button
               onClick={() => {
                 sounds.playPop();
                 setActiveSection('geography');
               }}
-              className={`flex-1 py-3 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 ${
+              className={`flex-1 py-3 px-5 rounded-full font-display font-extrabold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 btn-tactile ${
                 activeSection === 'geography'
-                  ? 'bg-gradient-to-r from-[#5B7FFF] to-[#27D980] text-slate-950 shadow-lg scale-[1.02]'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-gradient-to-r from-[#6366F1] to-[#10B981] text-white shadow-lg shadow-[#6366F1]/25 scale-[1.02]'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'
               }`}
             >
-              <span>🌍 Geography Games</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-950/20 font-bold">
-                FEATURED
+              <Compass className="w-4 h-4" />
+              <span>Geography Games</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/20 font-black tracking-wider uppercase">
+                MAIN
               </span>
             </button>
 
@@ -104,13 +106,14 @@ function App() {
                 sounds.playPop();
                 setActiveSection('casual');
               }}
-              className={`flex-1 py-3 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 ${
+              className={`flex-1 py-3 px-5 rounded-full font-display font-extrabold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 btn-tactile ${
                 activeSection === 'casual'
-                  ? 'bg-gradient-to-r from-[#5B7FFF] to-[#4364F7] text-white shadow-lg scale-[1.02]'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-gradient-to-r from-[#6366F1] to-[#4F46E5] text-white shadow-lg shadow-[#6366F1]/25 scale-[1.02]'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'
               }`}
             >
-              <span>🎮 Casual Games</span>
+              <Gamepad2 className="w-4 h-4" />
+              <span>Casual Arcade</span>
             </button>
           </div>
         </div>
