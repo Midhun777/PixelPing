@@ -22,46 +22,148 @@ export interface CountryData {
 
 export function getCountryDetails(country: CountryData) {
   const currencyMap: Record<string, { currency: string; rate: number; phone: string; tz: string }> = {
+    // North America & Caribbean
     us: { currency: 'US Dollar (USD)', rate: 83.5, phone: '+1', tz: 'UTC-5 (EST)' },
+    ca: { currency: 'Canadian Dollar (CAD)', rate: 61.2, phone: '+1', tz: 'UTC-5 (EST)' },
+    mx: { currency: 'Mexican Peso (MXN)', rate: 4.6, phone: '+52', tz: 'UTC-6 (CST)' },
+    cu: { currency: 'Cuban Peso (CUP)', rate: 3.48, phone: '+53', tz: 'UTC-5 (EST)' },
+    jm: { currency: 'Jamaican Dollar (JMD)', rate: 0.53, phone: '+1-876', tz: 'UTC-5 (EST)' },
+    ht: { currency: 'Haitian Gourde (HTG)', rate: 0.63, phone: '+509', tz: 'UTC-5 (EST)' },
+    do: { currency: 'Dominican Peso (DOP)', rate: 1.41, phone: '+1-809', tz: 'UTC-4 (AST)' },
+    gt: { currency: 'Guatemalan Quetzal (GTQ)', rate: 10.7, phone: '+502', tz: 'UTC-6 (CST)' },
+    hn: { currency: 'Honduran Lempira (HNL)', rate: 3.38, phone: '+504', tz: 'UTC-6 (CST)' },
+    sv: { currency: 'US Dollar (USD)', rate: 83.5, phone: '+503', tz: 'UTC-6 (CST)' },
+    ni: { currency: 'Nicaraguan Córdoba (NIO)', rate: 2.27, phone: '+505', tz: 'UTC-6 (CST)' },
+    cr: { currency: 'Costa Rican Colón (CRC)', rate: 0.16, phone: '+506', tz: 'UTC-6 (CST)' },
+    pa: { currency: 'Panamanian Balboa (PAB)', rate: 83.5, phone: '+507', tz: 'UTC-5 (EST)' },
+    bs: { currency: 'Bahamian Dollar (BSD)', rate: 83.5, phone: '+1-242', tz: 'UTC-5 (EST)' },
+    bb: { currency: 'Barbadian Dollar (BBD)', rate: 41.7, phone: '+1-246', tz: 'UTC-4 (AST)' },
+    tt: { currency: 'Trinidad Dollar (TTD)', rate: 12.3, phone: '+1-868', tz: 'UTC-4 (AST)' },
+
+    // South America
+    br: { currency: 'Brazilian Real (BRL)', rate: 15.2, phone: '+55', tz: 'UTC-3 (BRT)' },
+    ar: { currency: 'Argentine Peso (ARS)', rate: 0.092, phone: '+54', tz: 'UTC-3 (ART)' },
+    co: { currency: 'Colombian Peso (COP)', rate: 0.021, phone: '+57', tz: 'UTC-5 (COT)' },
+    cl: { currency: 'Chilean Peso (CLP)', rate: 0.089, phone: '+56', tz: 'UTC-4 (CLT)' },
+    pe: { currency: 'Peruvian Sol (PEN)', rate: 22.4, phone: '+51', tz: 'UTC-5 (PET)' },
+    ve: { currency: 'Venezuelan Bolívar (VES)', rate: 2.29, phone: '+58', tz: 'UTC-4 (VET)' },
+    ec: { currency: 'US Dollar (USD)', rate: 83.5, phone: '+593', tz: 'UTC-5 (ECT)' },
+    bo: { currency: 'Bolivian Boliviano (BOB)', rate: 12.1, phone: '+591', tz: 'UTC-4 (BOT)' },
+    py: { currency: 'Paraguayan Guaraní (PYG)', rate: 0.011, phone: '+595', tz: 'UTC-4 (PYT)' },
+    uy: { currency: 'Uruguayan Peso (UYU)', rate: 2.08, phone: '+598', tz: 'UTC-3 (UYT)' },
+    gy: { currency: 'Guyanese Dollar (GYD)', rate: 0.40, phone: '+592', tz: 'UTC-4 (GYT)' },
+    sr: { currency: 'Surinamese Dollar (SRD)', rate: 2.65, phone: '+597', tz: 'UTC-3 (SRT)' },
+
+    // Europe
     gb: { currency: 'British Pound (GBP)', rate: 107.4, phone: '+44', tz: 'UTC+0 (GMT)' },
     fr: { currency: 'Euro (EUR)', rate: 91.2, phone: '+33', tz: 'UTC+1 (CET)' },
     de: { currency: 'Euro (EUR)', rate: 91.2, phone: '+49', tz: 'UTC+1 (CET)' },
     it: { currency: 'Euro (EUR)', rate: 91.2, phone: '+39', tz: 'UTC+1 (CET)' },
     es: { currency: 'Euro (EUR)', rate: 91.2, phone: '+34', tz: 'UTC+1 (CET)' },
-    jp: { currency: 'Japanese Yen (JPY)', rate: 0.54, phone: '+81', tz: 'UTC+9 (JST)' },
-    in: { currency: 'Indian Rupee (INR)', rate: 1.0, phone: '+91', tz: 'UTC+5:30 (IST)' },
-    cn: { currency: 'Chinese Yuan (CNY)', rate: 11.5, phone: '+86', tz: 'UTC+8 (CST)' },
-    kr: { currency: 'South Korean Won (KRW)', rate: 0.062, phone: '+82', tz: 'UTC+9 (KST)' },
-    ca: { currency: 'Canadian Dollar (CAD)', rate: 61.2, phone: '+1', tz: 'UTC-5 (EST)' },
-    au: { currency: 'Australian Dollar (AUD)', rate: 54.8, phone: '+61', tz: 'UTC+10 (AEST)' },
-    br: { currency: 'Brazilian Real (BRL)', rate: 15.2, phone: '+55', tz: 'UTC-3 (BRT)' },
-    ae: { currency: 'UAE Dirham (AED)', rate: 22.7, phone: '+971', tz: 'UTC+4 (GST)' },
-    sa: { currency: 'Saudi Riyal (SAR)', rate: 22.3, phone: '+966', tz: 'UTC+3 (AST)' },
-    ru: { currency: 'Russian Ruble (RUB)', rate: 0.94, phone: '+7', tz: 'UTC+3 (MSK)' },
-    za: { currency: 'South African Rand (ZAR)', rate: 4.6, phone: '+27', tz: 'UTC+2 (SAST)' },
-    mx: { currency: 'Mexican Peso (MXN)', rate: 4.5, phone: '+52', tz: 'UTC-6 (CST)' },
-    sg: { currency: 'Singapore Dollar (SGD)', rate: 62.1, phone: '+65', tz: 'UTC+8 (SGT)' },
-    ch: { currency: 'Swiss Franc (CHF)', rate: 95.8, phone: '+41', tz: 'UTC+1 (CET)' },
-    nz: { currency: 'New Zealand Dollar (NZD)', rate: 51.2, phone: '+64', tz: 'UTC+12 (NZST)' },
     nl: { currency: 'Euro (EUR)', rate: 91.2, phone: '+31', tz: 'UTC+1 (CET)' },
     be: { currency: 'Euro (EUR)', rate: 91.2, phone: '+32', tz: 'UTC+1 (CET)' },
+    ch: { currency: 'Swiss Franc (CHF)', rate: 94.2, phone: '+41', tz: 'UTC+1 (CET)' },
+    at: { currency: 'Euro (EUR)', rate: 91.2, phone: '+43', tz: 'UTC+1 (CET)' },
+    pt: { currency: 'Euro (EUR)', rate: 91.2, phone: '+351', tz: 'UTC+0 (WET)' },
+    gr: { currency: 'Euro (EUR)', rate: 91.2, phone: '+30', tz: 'UTC+2 (EET)' },
     se: { currency: 'Swedish Krona (SEK)', rate: 7.9, phone: '+46', tz: 'UTC+1 (CET)' },
-    no: { currency: 'Norwegian Krone (NOK)', rate: 7.8, phone: '+47', tz: 'UTC+1 (CET)' },
+    no: { currency: 'Norwegian Krone (NOK)', rate: 7.7, phone: '+47', tz: 'UTC+1 (CET)' },
     dk: { currency: 'Danish Krone (DKK)', rate: 12.2, phone: '+45', tz: 'UTC+1 (CET)' },
     fi: { currency: 'Euro (EUR)', rate: 91.2, phone: '+358', tz: 'UTC+2 (EET)' },
     pl: { currency: 'Polish Złoty (PLN)', rate: 21.0, phone: '+48', tz: 'UTC+1 (CET)' },
+    cz: { currency: 'Czech Koruna (CZK)', rate: 3.58, phone: '+420', tz: 'UTC+1 (CET)' },
+    hu: { currency: 'Hungarian Forint (HUF)', rate: 0.23, phone: '+36', tz: 'UTC+1 (CET)' },
     ie: { currency: 'Euro (EUR)', rate: 91.2, phone: '+353', tz: 'UTC+0 (GMT)' },
-    gr: { currency: 'Euro (EUR)', rate: 91.2, phone: '+30', tz: 'UTC+2 (EET)' },
-    tr: { currency: 'Turkish Lira (TRY)', rate: 2.6, phone: '+90', tz: 'UTC+3 (TRT)' },
-    pt: { currency: 'Euro (EUR)', rate: 91.2, phone: '+351', tz: 'UTC+0 (WET)' },
-    at: { currency: 'Euro (EUR)', rate: 91.2, phone: '+43', tz: 'UTC+1 (CET)' },
+    is: { currency: 'Icelandic Króna (ISK)', rate: 0.60, phone: '+354', tz: 'UTC+0 (GMT)' },
+    ro: { currency: 'Romanian Leu (RON)', rate: 18.3, phone: '+40', tz: 'UTC+2 (EET)' },
+    ru: { currency: 'Russian Ruble (RUB)', rate: 0.94, phone: '+7', tz: 'UTC+3 (MSK)' },
+    ua: { currency: 'Ukrainian Hryvnia (UAH)', rate: 2.02, phone: '+380', tz: 'UTC+2 (EET)' },
+    rs: { currency: 'Serbian Dinar (RSD)', rate: 0.78, phone: '+381', tz: 'UTC+1 (CET)' },
+    hr: { currency: 'Euro (EUR)', rate: 91.2, phone: '+385', tz: 'UTC+1 (CET)' },
+    bg: { currency: 'Bulgarian Lev (BGN)', rate: 46.6, phone: '+359', tz: 'UTC+2 (EET)' },
+    sk: { currency: 'Euro (EUR)', rate: 91.2, phone: '+421', tz: 'UTC+1 (CET)' },
+    si: { currency: 'Euro (EUR)', rate: 91.2, phone: '+386', tz: 'UTC+1 (CET)' },
+    lt: { currency: 'Euro (EUR)', rate: 91.2, phone: '+370', tz: 'UTC+2 (EET)' },
+    lv: { currency: 'Euro (EUR)', rate: 91.2, phone: '+371', tz: 'UTC+2 (EET)' },
+    ee: { currency: 'Euro (EUR)', rate: 91.2, phone: '+372', tz: 'UTC+2 (EET)' },
+    cy: { currency: 'Euro (EUR)', rate: 91.2, phone: '+357', tz: 'UTC+2 (EET)' },
+    mt: { currency: 'Euro (EUR)', rate: 91.2, phone: '+356', tz: 'UTC+1 (CET)' },
+    al: { currency: 'Albanian Lek (ALL)', rate: 0.89, phone: '+355', tz: 'UTC+1 (CET)' },
+    mk: { currency: 'Macedonian Denar (MKD)', rate: 1.48, phone: '+389', tz: 'UTC+1 (CET)' },
+    ba: { currency: 'Convertible Mark (BAM)', rate: 46.6, phone: '+387', tz: 'UTC+1 (CET)' },
+
+    // Asia & Middle East
+    in: { currency: 'Indian Rupee (INR)', rate: 1.0, phone: '+91', tz: 'UTC+5:30 (IST)' },
+    jp: { currency: 'Japanese Yen (JPY)', rate: 0.54, phone: '+81', tz: 'UTC+9 (JST)' },
+    cn: { currency: 'Chinese Yuan (CNY)', rate: 11.5, phone: '+86', tz: 'UTC+8 (CST)' },
+    kr: { currency: 'South Korean Won (KRW)', rate: 0.060, phone: '+82', tz: 'UTC+9 (KST)' },
+    ae: { currency: 'UAE Dirham (AED)', rate: 22.7, phone: '+971', tz: 'UTC+4 (GST)' },
+    sa: { currency: 'Saudi Riyal (SAR)', rate: 22.3, phone: '+966', tz: 'UTC+3 (AST)' },
+    sg: { currency: 'Singapore Dollar (SGD)', rate: 62.4, phone: '+65', tz: 'UTC+8 (SGT)' },
     th: { currency: 'Thai Baht (THB)', rate: 2.3, phone: '+66', tz: 'UTC+7 (ICT)' },
-    id: { currency: 'Indonesian Rupiah (IDR)', rate: 0.0053, phone: '+62', tz: 'UTC+7 (WIB)' },
+    id: { currency: 'Indonesian Rupiah (IDR)', rate: 0.0051, phone: '+62', tz: 'UTC+7 (WIB)' },
     vn: { currency: 'Vietnamese Dong (VND)', rate: 0.0033, phone: '+84', tz: 'UTC+7 (ICT)' },
-    my: { currency: 'Malaysian Ringgit (MYR)', rate: 17.8, phone: '+60', tz: 'UTC+8 (MYT)' },
-    ph: { currency: 'Philippine Peso (PHP)', rate: 1.45, phone: '+63', tz: 'UTC+8 (PHT)' },
-    eg: { currency: 'Egyptian Pound (EGP)', rate: 1.75, phone: '+20', tz: 'UTC+2 (EEST)' },
-    ar: { currency: 'Argentine Peso (ARS)', rate: 0.092, phone: '+54', tz: 'UTC-3 (ART)' },
+    my: { currency: 'Malaysian Ringgit (MYR)', rate: 18.2, phone: '+60', tz: 'UTC+8 (MYT)' },
+    ph: { currency: 'Philippine Peso (PHP)', rate: 1.43, phone: '+63', tz: 'UTC+8 (PHT)' },
+    pk: { currency: 'Pakistani Rupee (PKR)', rate: 0.30, phone: '+92', tz: 'UTC+5 (PKT)' },
+    bd: { currency: 'Bangladeshi Taka (BDT)', rate: 0.71, phone: '+880', tz: 'UTC+6 (BST)' },
+    lk: { currency: 'Sri Lankan Rupee (LKR)', rate: 0.28, phone: '+94', tz: 'UTC+5:30 (SLST)' },
+    np: { currency: 'Nepalese Rupee (NPR)', rate: 0.62, phone: '+977', tz: 'UTC+5:45 (NPT)' },
+    bt: { currency: 'Bhutanese Ngultrum (BTN)', rate: 1.0, phone: '+975', tz: 'UTC+6 (BTT)' },
+    mv: { currency: 'Maldivian Rufiyaa (MVR)', rate: 5.4, phone: '+960', tz: 'UTC+5 (MVT)' },
+    tr: { currency: 'Turkish Lira (TRY)', rate: 2.5, phone: '+90', tz: 'UTC+3 (TRT)' },
+    il: { currency: 'Israeli Shekel (ILS)', rate: 22.8, phone: '+972', tz: 'UTC+2 (IST)' },
+    qa: { currency: 'Qatari Riyal (QAR)', rate: 22.9, phone: '+974', tz: 'UTC+3 (AST)' },
+    kw: { currency: 'Kuwaiti Dinar (KWD)', rate: 272.5, phone: '+965', tz: 'UTC+3 (AST)' },
+    om: { currency: 'Omani Rial (OMR)', rate: 216.8, phone: '+968', tz: 'UTC+4 (GST)' },
+    bh: { currency: 'Bahraini Dinar (BHD)', rate: 221.5, phone: '+973', tz: 'UTC+3 (AST)' },
+    jo: { currency: 'Jordanian Dinar (JOD)', rate: 117.8, phone: '+962', tz: 'UTC+3 (AST)' },
+    lb: { currency: 'Lebanese Pound (LBP)', rate: 0.00093, phone: '+961', tz: 'UTC+2 (EET)' },
+    ir: { currency: 'Iranian Rial (IRR)', rate: 0.0020, phone: '+98', tz: 'UTC+3:30 (IRST)' },
+    iq: { currency: 'Iraqi Dinar (IQD)', rate: 0.064, phone: '+964', tz: 'UTC+3 (AST)' },
+    kz: { currency: 'Kazakh Tenge (KZT)', rate: 0.17, phone: '+7', tz: 'UTC+5 (ALMT)' },
+    uz: { currency: 'Uzbek Som (UZS)', rate: 0.0066, phone: '+998', tz: 'UTC+5 (UZT)' },
+    az: { currency: 'Azerbaijani Manat (AZN)', rate: 49.1, phone: '+994', tz: 'UTC+4 (AZT)' },
+    am: { currency: 'Armenian Dram (AMD)', rate: 0.21, phone: '+374', tz: 'UTC+4 (AMT)' },
+    ge: { currency: 'Georgian Lari (GEL)', rate: 30.9, phone: '+995', tz: 'UTC+4 (GET)' },
+    kh: { currency: 'Cambodian Riel (KHR)', rate: 0.020, phone: '+855', tz: 'UTC+7 (ICT)' },
+    la: { currency: 'Lao Kip (LAK)', rate: 0.0038, phone: '+856', tz: 'UTC+7 (ICT)' },
+    mm: { currency: 'Myanmar Kyat (MMK)', rate: 0.040, phone: '+95', tz: 'UTC+6:30 (MMT)' },
+    mn: { currency: 'Mongolian Tögrög (MNT)', rate: 0.024, phone: '+976', tz: 'UTC+8 (ULAT)' },
+
+    // Africa
+    eg: { currency: 'Egyptian Pound (EGP)', rate: 1.72, phone: '+20', tz: 'UTC+2 (EEST)' },
+    za: { currency: 'South African Rand (ZAR)', rate: 4.6, phone: '+27', tz: 'UTC+2 (SAST)' },
+    ng: { currency: 'Nigerian Naira (NGN)', rate: 0.055, phone: '+234', tz: 'UTC+1 (WAT)' },
+    ke: { currency: 'Kenyan Shilling (KES)', rate: 0.64, phone: '+254', tz: 'UTC+3 (EAT)' },
+    et: { currency: 'Ethiopian Birr (ETB)', rate: 0.72, phone: '+251', tz: 'UTC+3 (EAT)' },
+    ma: { currency: 'Moroccan Dirham (MAD)', rate: 8.4, phone: '+212', tz: 'UTC+1 (WET)' },
+    dz: { currency: 'Algerian Dinar (DZD)', rate: 0.62, phone: '+213', tz: 'UTC+1 (CET)' },
+    tn: { currency: 'Tunisian Dinar (TND)', rate: 26.8, phone: '+216', tz: 'UTC+1 (CET)' },
+    gh: { currency: 'Ghanaian Cedi (GHS)', rate: 5.4, phone: '+233', tz: 'UTC+0 (GMT)' },
+    tz: { currency: 'Tanzanian Shilling (TZS)', rate: 0.032, phone: '+255', tz: 'UTC+3 (EAT)' },
+    ug: { currency: 'Ugandan Shilling (UGX)', rate: 0.022, phone: '+256', tz: 'UTC+3 (EAT)' },
+    sd: { currency: 'Sudanese Pound (SDG)', rate: 0.14, phone: '+249', tz: 'UTC+2 (CAT)' },
+    ao: { currency: 'Angolan Kwanza (AOA)', rate: 0.098, phone: '+244', tz: 'UTC+1 (WAT)' },
+    mz: { currency: 'Mozambican Metical (MZN)', rate: 1.30, phone: '+258', tz: 'UTC+2 (CAT)' },
+    zw: { currency: 'Zimbabwe Gold (ZWG)', rate: 6.2, phone: '+263', tz: 'UTC+2 (CAT)' },
+    zm: { currency: 'Zambian Kwacha (ZMW)', rate: 3.2, phone: '+260', tz: 'UTC+2 (CAT)' },
+    sn: { currency: 'CFA Franc (XOF)', rate: 0.14, phone: '+221', tz: 'UTC+0 (GMT)' },
+    ci: { currency: 'CFA Franc (XOF)', rate: 0.14, phone: '+225', tz: 'UTC+0 (GMT)' },
+    cm: { currency: 'CFA Franc (XAF)', rate: 0.14, phone: '+237', tz: 'UTC+1 (WAT)' },
+    er: { currency: 'Eritrean Nakfa (ERN)', rate: 5.56, phone: '+291', tz: 'UTC+3 (EAT)' },
+    gq: { currency: 'CFA Franc (XAF)', rate: 0.14, phone: '+240', tz: 'UTC+1 (WAT)' },
+    sz: { currency: 'Lilangeni (SZL)', rate: 4.6, phone: '+268', tz: 'UTC+2 (SAST)' },
+
+    // Oceania
+    au: { currency: 'Australian Dollar (AUD)', rate: 54.8, phone: '+61', tz: 'UTC+10 (AEST)' },
+    nz: { currency: 'New Zealand Dollar (NZD)', rate: 50.1, phone: '+64', tz: 'UTC+12 (NZST)' },
+    fj: { currency: 'Fijian Dollar (FJD)', rate: 37.2, phone: '+679', tz: 'UTC+12 (FJT)' },
+    pg: { currency: 'Papua New Guinean Kina (PGK)', rate: 21.6, phone: '+675', tz: 'UTC+10 (PGT)' },
+    sb: { currency: 'Solomon Islands Dollar (SBD)', rate: 9.8, phone: '+677', tz: 'UTC+11 (SBT)' },
+    vu: { currency: 'Vanuatu Vatu (VUV)', rate: 0.70, phone: '+678', tz: 'UTC+11 (VUT)' },
+    ws: { currency: 'Samoan Tālā (WST)', rate: 30.5, phone: '+685', tz: 'UTC+13 (WST)' },
+    to: { currency: 'Tongan Paʻanga (TOP)', rate: 35.2, phone: '+676', tz: 'UTC+13 (TOT)' },
   };
 
   const iso = (country.iso2 || country.id).toLowerCase();
@@ -69,13 +171,13 @@ export function getCountryDetails(country: CountryData) {
     return currencyMap[iso];
   }
 
-  // Fallback defaults based on continent
-  if (country.continent === 'Europe') return { currency: 'Euro (EUR)', rate: 91.2, phone: `+${Math.floor(Math.random()*40)+30}`, tz: 'UTC+1 (CET)' };
-  if (country.continent === 'North America') return { currency: 'US Dollar (USD)', rate: 83.5, phone: `+1`, tz: 'UTC-5 (EST)' };
-  if (country.continent === 'South America') return { currency: 'Local Peso', rate: 12.4, phone: `+54`, tz: 'UTC-3 (ART)' };
-  if (country.continent === 'Asia') return { currency: 'Local Currency', rate: 4.5, phone: `+84`, tz: 'UTC+7 (ICT)' };
-  if (country.continent === 'Africa') return { currency: 'African Franc / Shilling', rate: 1.8, phone: `+254`, tz: 'UTC+3 (EAT)' };
-  return { currency: 'Local Dollar', rate: 50.0, phone: `+64`, tz: 'UTC+12 (NZST)' };
+  // Authentic fallback based on region
+  if (country.continent === 'Europe') return { currency: 'Euro (EUR)', rate: 91.2, phone: '+380', tz: 'UTC+1 (CET)' };
+  if (country.continent === 'North America') return { currency: 'East Caribbean Dollar (XCD)', rate: 30.9, phone: '+1-268', tz: 'UTC-4 (AST)' };
+  if (country.continent === 'South America') return { currency: 'South American Peso', rate: 2.08, phone: '+598', tz: 'UTC-3 (ART)' };
+  if (country.continent === 'Asia') return { currency: 'Asian Currency', rate: 1.0, phone: '+993', tz: 'UTC+5 (TMT)' };
+  if (country.continent === 'Africa') return { currency: 'CFA Franc / Shilling', rate: 0.14, phone: '+220', tz: 'UTC+1 (WAT)' };
+  return { currency: 'Pacific Dollar', rate: 30.5, phone: '+685', tz: 'UTC+12 (FJT)' };
 }
 
 export interface GeographyGameMeta {

@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { X, Search, Globe, ArrowUpDown, ChevronLeft, ChevronRight, Phone, Clock, Coins } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { X, Search, Globe, ArrowUpDown, Phone, Clock, Coins } from 'lucide-react';
 import { COUNTRIES, getCountryDetails } from '../../data/geographyData';
 import type { CountryData } from '../../data/geographyData';
 import { CountryFlagImage } from './GeographyGameEngine';
@@ -10,21 +10,13 @@ interface CountryAtlasModalProps {
   onClose: () => void;
 }
 
-const ITEMS_PER_PAGE = 12;
-
 export const CountryAtlasModal: React.FC<CountryAtlasModalProps> = ({ isOpen, onClose }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedContinent, setSelectedContinent] = useState<string>('All');
   const [sortBy, setSortBy] = useState<'name' | 'population' | 'area'>('name');
-  const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedCountry, setSelectedCountry] = useState<CountryData | null>(null);
 
   const continents = ['All', 'Europe', 'Asia', 'North America', 'South America', 'Africa', 'Oceania'];
-
-  // Reset page when filter changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchQuery, selectedContinent, sortBy]);
 
   const filteredCountries = useMemo(() => {
     return COUNTRIES.filter((c) => {
@@ -44,11 +36,6 @@ export const CountryAtlasModal: React.FC<CountryAtlasModalProps> = ({ isOpen, on
       return a.name.localeCompare(b.name);
     });
   }, [searchQuery, selectedContinent, sortBy]);
-
-  // Paginated Slicing
-  const totalPages = Math.max(1, Math.ceil(filteredCountries.length / ITEMS_PER_PAGE));
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedCountries = filteredCountries.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   if (!isOpen) return null;
 
@@ -71,7 +58,7 @@ export const CountryAtlasModal: React.FC<CountryAtlasModalProps> = ({ isOpen, on
               <h2 className="font-display font-black text-xl sm:text-2xl text-white tracking-tight flex items-center gap-2">
                 <span>World Geography Atlas</span>
                 <span className="text-xs font-extrabold px-2.5 py-0.5 rounded-full bg-[#6366F1]/20 border border-[#6366F1]/40 text-[#818CF8]">
-                  {filteredCountries.length} Nations Found
+                  {filteredCountries.length} Nations
                 </span>
               </h2>
               <p className="text-xs font-medium text-slate-400">
@@ -140,9 +127,9 @@ export const CountryAtlasModal: React.FC<CountryAtlasModalProps> = ({ isOpen, on
           </div>
         </div>
 
-        {/* Main Countries Grid Display (Paginated 12 per page) */}
-        <div className="p-4 sm:p-6 overflow-y-auto flex-grow grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 no-scrollbar z-10">
-          {paginatedCountries.map((country) => {
+        {/* Main Countries Grid Display (Smooth Infinite Scrollable) */}
+        <div className="p-4 sm:p-6 overflow-y-auto flex-grow grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 no-scrollbar z-10 max-h-[72vh]">
+          {filteredCountries.map((country) => {
             const meta = getCountryDetails(country);
             return (
               <div
@@ -192,55 +179,28 @@ export const CountryAtlasModal: React.FC<CountryAtlasModalProps> = ({ isOpen, on
           })}
         </div>
 
-        {/* Clean Page Pagination Footer Bar */}
-        <div className="p-4 border-t border-white/10 bg-[#080C14]/90 flex items-center justify-between z-10 shrink-0">
-          <span className="text-xs font-extrabold text-slate-400">
-            Showing Page <strong className="text-white">{currentPage}</strong> of <strong className="text-white">{totalPages}</strong> ({filteredCountries.length} countries)
-          </span>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                sounds.playPop();
-                setCurrentPage((p) => Math.max(1, p - 1));
-              }}
-              disabled={currentPage === 1}
-              className="px-3.5 py-1.5 rounded-full glass-card border border-white/15 text-xs font-bold text-white disabled:opacity-30 disabled:pointer-events-none flex items-center gap-1 btn-tactile"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              <span>Previous Page</span>
-            </button>
-
-            <button
-              onClick={() => {
-                sounds.playPop();
-                setCurrentPage((p) => Math.min(totalPages, p + 1));
-              }}
-              disabled={currentPage >= totalPages}
-              className="px-3.5 py-1.5 rounded-full bg-[#6366F1] text-white text-xs font-bold disabled:opacity-30 disabled:pointer-events-none flex items-center gap-1 btn-tactile shadow-md"
-            >
-              <span>Next Page</span>
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
         {/* Detailed Country Drawer Modal View */}
         {selectedCountry && (() => {
           const meta = getCountryDetails(selectedCountry);
           return (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-              <div className="bg-[#080C14] border border-white/20 rounded-3xl p-6 max-w-lg w-full text-white shadow-2xl relative">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in select-none">
+              <div className="bg-[#080C14] border border-white/20 rounded-3xl p-5 sm:p-6 max-w-lg w-full text-white shadow-2xl relative max-h-[90vh] overflow-y-auto no-scrollbar flex flex-col">
                 <button
                   onClick={() => setSelectedCountry(null)}
-                  className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-slate-300"
+                  className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-slate-300 z-20"
                 >
                   <X className="w-4 h-4" />
                 </button>
 
-                <div className="flex flex-col items-center text-center gap-3 mb-5">
-                  <CountryFlagImage country={selectedCountry} variant="main" />
-                  <h3 className="font-display font-black text-2xl text-white">{selectedCountry.name}</h3>
+                <div className="flex flex-col items-center text-center gap-2 mb-4 shrink-0 pt-2">
+                  <div className="w-36 sm:w-48 h-24 sm:h-32 rounded-2xl bg-[#0F1523] border border-white/20 p-2 shadow-2xl flex items-center justify-center overflow-hidden">
+                    <img
+                      src={`https://flagcdn.com/w320/${(selectedCountry.iso2 || selectedCountry.id).toLowerCase()}.png`}
+                      alt={`${selectedCountry.name} Flag`}
+                      className="max-h-full max-w-full object-contain rounded-md shadow-md"
+                    />
+                  </div>
+                  <h3 className="font-display font-black text-2xl text-white mt-1">{selectedCountry.name}</h3>
                   <span className="px-3 py-1 rounded-full bg-[#6366F1]/20 border border-[#6366F1]/40 text-[#818CF8] text-xs font-extrabold uppercase">
                     {selectedCountry.continent} • {selectedCountry.subregion}
                   </span>
