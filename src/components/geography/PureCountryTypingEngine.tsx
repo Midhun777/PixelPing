@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, Zap, RefreshCw, CheckCircle2 } from 'lucide-react';
-import { COUNTRIES } from '../../data/geographyData';
+import { COUNTRIES, fuzzyMatch } from '../../data/geographyData';
 import type { GeographyGameMeta } from '../../data/geographyData';
 import { CountryFlagImage } from './GeographyGameEngine';
 import { sounds } from '../../services/audio';
@@ -37,12 +37,13 @@ export const PureCountryTypingEngine: React.FC<PureCountryTypingEngineProps> = (
 
     const cleanInput = val.trim().toLowerCase();
 
-    // Find matching un-guessed country by exact name or exact alternative name
+    // Find matching un-guessed country
     const match = COUNTRIES.find((c) => {
       if (guessedIds.has(c.id)) return false;
       const mainMatch = c.name.toLowerCase() === cleanInput;
       const altMatch = c.altNames && c.altNames.some((alt) => alt.toLowerCase() === cleanInput);
-      return mainMatch || altMatch;
+      const isFuzzy = cleanInput.length >= 4 && fuzzyMatch(cleanInput, c.name, c.altNames);
+      return mainMatch || altMatch || isFuzzy;
     });
 
     if (match) {
