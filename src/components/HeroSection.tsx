@@ -1,187 +1,95 @@
-import React, { useState } from 'react';
-import { Gamepad2, Sun, Moon, Volume2, VolumeX, Sparkles, Globe } from 'lucide-react';
-import confetti from 'canvas-confetti';
+import React from 'react';
+import { Globe, Gamepad2, Compass, MapPin, Navigation } from 'lucide-react';
 import { sounds } from '../services/audio';
 
 interface HeroSectionProps {
-  onExploreClick: () => void;
-  onRandomClick: () => void;
-  onLaunchGame: (gameId: string) => void;
-  isDark: boolean;
-  onToggleTheme: () => void;
+  onExploreGeography: () => void;
+  onExploreAllGames: () => void;
 }
 
-// 4 Premium Curated Playful Gradient Palettes
-const COLOR_PALETTES = [
-  {
-    name: 'Electric Aurora',
-    pixel: 'from-[#6366F1] via-[#818CF8] to-[#10B981]',
-    ping: 'from-[#10B981] via-[#F59E0B] to-[#F43F5E]',
-    glow: 'from-[#6366F1]/25 via-[#10B981]/25 to-[#F59E0B]/25',
-    accentBg: 'bg-[#6366F1]/10 text-[#6366F1] dark:text-[#818CF8]',
-  },
-  {
-    name: 'Neon Sunset',
-    pixel: 'from-[#F43F5E] via-[#FB7185] to-[#F59E0B]',
-    ping: 'from-[#F59E0B] via-[#10B981] to-[#6366F1]',
-    glow: 'from-[#F43F5E]/25 via-[#F59E0B]/25 to-[#6366F1]/25',
-    accentBg: 'bg-[#F43F5E]/10 text-[#F43F5E] dark:text-[#FB7185]',
-  },
-  {
-    name: 'Cyber Mint',
-    pixel: 'from-[#06B6D4] via-[#38BDF8] to-[#34D399]',
-    ping: 'from-[#34D399] via-[#FBBF24] to-[#EC4899]',
-    glow: 'from-[#06B6D4]/25 via-[#34D399]/25 to-[#EC4899]/25',
-    accentBg: 'bg-[#06B6D4]/10 text-[#06B6D4] dark:text-[#38BDF8]',
-  },
-  {
-    name: 'Cosmic Violet',
-    pixel: 'from-[#8B5CF6] via-[#A855F7] to-[#EC4899]',
-    ping: 'from-[#EC4899] via-[#FB923C] to-[#FACC15]',
-    glow: 'from-[#8B5CF6]/25 via-[#EC4899]/25 to-[#FACC15]/25',
-    accentBg: 'bg-[#8B5CF6]/10 text-[#8B5CF6] dark:text-[#A855F7]',
-  },
-];
-
 export const HeroSection: React.FC<HeroSectionProps> = ({
-  isDark,
-  onToggleTheme,
+  onExploreGeography,
+  onExploreAllGames,
 }) => {
-  const [isMuted, setIsMuted] = useState(sounds.getMuted());
-  const [paletteIndex, setPaletteIndex] = useState(0);
-  const [clickCount, setClickCount] = useState(0);
-  const [showEasterEgg, setShowEasterEgg] = useState(false);
-
-  const currentPalette = COLOR_PALETTES[paletteIndex];
-
-  const handleMuteToggle = () => {
-    const muted = sounds.toggleMute();
-    setIsMuted(muted);
-  };
-
-  const handleHeaderClick = () => {
-    sounds.playPop();
-    setPaletteIndex((prev) => (prev + 1) % COLOR_PALETTES.length);
-  };
-
-  const handleBadgeClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    sounds.playDiceRoll();
-    const nextCount = clickCount + 1;
-    setClickCount(nextCount);
-
-    if (nextCount >= 3) {
-      sounds.playVictory();
-      setShowEasterEgg(true);
-      setClickCount(0);
-      confetti({
-        particleCount: 160,
-        spread: 100,
-        origin: { y: 0.35 },
-      });
-      setTimeout(() => setShowEasterEgg(false), 4500);
-    }
-  };
-
   return (
-    <section className="relative pt-6 pb-6 sm:pb-8 px-4 sm:px-6 overflow-hidden select-none">
-      {/* Top Corner Quick Control Action Pills */}
-      <div className="max-w-6xl mx-auto flex items-center justify-between gap-3 mb-6 relative z-20">
-        {/* Left Side Tagline Badge */}
-        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-pill border border-slate-200/80 dark:border-white/10 text-[11px] font-bold text-slate-600 dark:text-slate-300 shadow-sm">
-          <Globe className="w-3.5 h-3.5 text-[#6366F1] dark:text-[#818CF8]" />
-          <span className="hidden sm:inline">120+ Countries & Mini-Games</span>
-          <span className="sm:hidden">PIXEL PING</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
-        </div>
+    <section className="relative py-12 sm:py-16 px-4 sm:px-6 overflow-hidden select-none">
+      {/* Background Radial Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-r from-[#6366F1]/20 via-[#10B981]/15 to-[#F59E0B]/20 blur-3xl pointer-events-none rounded-full" />
 
-        {/* Right Side Quick Action Buttons */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleMuteToggle}
-            title={isMuted ? 'Unmute Sound FX' : 'Mute Sound FX'}
-            aria-label="Toggle Sound FX"
-            className="w-10 h-10 rounded-full glass-pill flex items-center justify-center text-slate-600 dark:text-slate-300 hover:scale-110 active:scale-95 transition-all shadow-sm border border-slate-200/80 dark:border-white/10"
-          >
-            {isMuted ? <VolumeX className="w-4.5 h-4.5 text-rose-500" /> : <Volume2 className="w-4.5 h-4.5 text-emerald-500" />}
-          </button>
-
-          <button
-            onClick={() => {
-              sounds.playPop();
-              onToggleTheme();
-            }}
-            title="Toggle Theme"
-            aria-label="Toggle Light / Dark Mode"
-            className="w-10 h-10 rounded-full glass-pill flex items-center justify-center text-slate-600 dark:text-slate-300 hover:scale-110 active:scale-95 transition-all shadow-sm border border-slate-200/80 dark:border-white/10"
-          >
-            {isDark ? (
-              <Sun className="w-4.5 h-4.5 text-amber-400 transition-transform duration-500 hover:rotate-45" />
-            ) : (
-              <Moon className="w-4.5 h-4.5 text-slate-700 transition-transform duration-500 hover:-rotate-45" />
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Floating Background Accent Shapes */}
-      <div className="absolute top-12 left-4 sm:left-14 pointer-events-none animate-float-slow opacity-80 z-0">
-        <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#6366F1]/20 to-[#FBBF24]/30 backdrop-blur-md border border-[#6366F1]/20 flex items-center justify-center text-lg shadow-lg rotate-12">
-          🌍
-        </div>
-      </div>
-
-      <div className="absolute top-14 right-4 sm:right-16 pointer-events-none animate-float-reverse opacity-80 z-0">
-        <div className="w-12 h-12 rounded-3xl bg-gradient-to-br from-[#10B981]/20 to-[#6366F1]/20 backdrop-blur-md border border-[#10B981]/20 flex items-center justify-center text-xl shadow-lg -rotate-6">
-          🏆
-        </div>
-      </div>
-
-      {/* Interactive Title Header Banner */}
-      <div className="relative z-10 max-w-5xl mx-auto text-center flex flex-col items-center">
-        {/* Ambient Radial Glow */}
-        <div
-          className={`absolute -top-12 left-1/2 -translate-x-1/2 w-[550px] h-[240px] rounded-full bg-gradient-to-r ${currentPalette.glow} blur-3xl transition-all duration-700 pointer-events-none`}
-        />
-
-        {/* Secret Easter Egg Alert Pill */}
-        {showEasterEgg && (
-          <div className="mb-4 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-400 via-rose-500 to-indigo-600 text-white font-extrabold text-xs shadow-2xl animate-bounce flex items-center gap-2 z-30">
-            <Sparkles className="w-4 h-4 fill-white" />
-            <span>🎉 SECRET EASTER EGG UNLOCKED! PARTY MODE ACTIVATED!</span>
-            <Sparkles className="w-4 h-4 fill-white" />
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+        {/* Left Column: Bold Hero Headline & Call to Actions */}
+        <div className="lg:col-span-7 flex flex-col items-start text-left">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-pill border border-slate-200/80 dark:border-white/10 text-xs font-extrabold text-slate-700 dark:text-slate-300 shadow-sm mb-6">
+            <span className="w-2 h-2 rounded-full bg-[#10B981] animate-ping" />
+            <span className="font-display">WORLD GEOGRAPHY & ARCADE PLATFORM</span>
           </div>
-        )}
 
-        {/* Interactive Title Logo Display */}
-        <div
-          onClick={handleHeaderClick}
-          title="Click logo to cycle color theme!"
-          className="flex flex-col items-center gap-2 relative z-10 cursor-pointer group"
-        >
-          <div className="flex items-center gap-3 sm:gap-5 flex-wrap justify-center">
-            <h1
-              className={`font-display font-black text-6xl sm:text-7xl md:text-8xl tracking-tight leading-none bg-clip-text text-transparent bg-gradient-to-r ${currentPalette.pixel} uppercase select-none drop-shadow-sm transition-all duration-500 group-hover:scale-105`}
-            >
-              PIXEL
-            </h1>
+          <h1 className="font-display font-black text-5xl sm:text-6xl lg:text-7xl tracking-tight leading-[1.08] text-slate-900 dark:text-white mb-6">
+            Play. Learn.{' '}
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#6366F1] via-[#818CF8] to-[#38BDF8] block sm:inline">
+              Explore the World.
+            </span>
+          </h1>
 
-            {/* Glowing 3D Controller Badge (3-tap Easter Egg Trigger) */}
-            <div
-              onClick={handleBadgeClick}
-              title="Tap 3 times for a party secret!"
-              className="w-14 h-14 sm:w-20 sm:h-20 rounded-3xl bg-gradient-to-tr from-[#6366F1] via-[#10B981] to-[#F59E0B] p-1 shadow-2xl shadow-[#6366F1]/30 flex items-center justify-center rotate-6 hover:rotate-180 hover:scale-125 transition-all duration-500 active:scale-95"
+          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-xl font-medium leading-relaxed mb-8">
+            Fun geography games to test your knowledge, master flags, capitals, and explore the world in a whole new interactive way.
+          </p>
+
+          {/* Action Button Row matching reference */}
+          <div className="flex items-center gap-4 flex-wrap">
+            <button
+              onClick={() => {
+                sounds.playPop();
+                onExploreGeography();
+              }}
+              className="px-6 py-3.5 rounded-full bg-gradient-to-r from-[#6366F1] to-[#4F46E5] text-white font-display font-extrabold text-sm shadow-xl shadow-[#6366F1]/25 flex items-center gap-2.5 btn-tactile"
             >
-              <div className="w-full h-full bg-[#F8FAFC] dark:bg-[#080B11] rounded-[20px] flex items-center justify-center shadow-inner">
-                <Gamepad2 className="w-8 h-8 sm:w-11 sm:h-11 text-[#6366F1] dark:text-[#818CF8] animate-pulse-slow" />
+              <span>Explore Geography</span>
+              <Globe className="w-4.5 h-4.5 fill-white/20" />
+            </button>
+
+            <button
+              onClick={() => {
+                sounds.playPop();
+                onExploreAllGames();
+              }}
+              className="px-6 py-3.5 rounded-full glass-pill text-slate-800 dark:text-slate-100 font-display font-extrabold text-sm border border-slate-200/80 dark:border-white/15 flex items-center gap-2.5 btn-tactile hover:bg-slate-100 dark:hover:bg-white/10"
+            >
+              <span>All Games</span>
+              <Gamepad2 className="w-4.5 h-4.5 text-[#6366F1] dark:text-[#818CF8]" />
+            </button>
+          </div>
+        </div>
+
+        {/* Right Column: 3D Graphic & Floating Interactive World Elements */}
+        <div className="lg:col-span-5 flex items-center justify-center relative">
+          {/* Main Glowing Globe Backdrop Container */}
+          <div className="w-72 h-72 sm:w-88 sm:h-88 rounded-full bg-gradient-to-tr from-[#6366F1]/20 via-[#10B981]/30 to-[#F59E0B]/20 p-2 relative shadow-2xl animate-float-slow flex items-center justify-center border border-white/20 backdrop-blur-xl">
+            {/* Center Globe Sphere Graphic */}
+            <div className="w-full h-full rounded-full bg-slate-900/90 border border-white/20 flex flex-col items-center justify-center relative overflow-hidden shadow-inner group">
+              <div className="text-8xl sm:text-9xl group-hover:scale-110 transition-transform duration-700 select-none">
+                🌍
               </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#6366F1]/40 via-transparent to-transparent pointer-events-none" />
             </div>
 
-            <h1
-              className={`font-display font-black text-6xl sm:text-7xl md:text-8xl tracking-tight leading-none bg-clip-text text-transparent bg-gradient-to-r ${currentPalette.ping} uppercase select-none drop-shadow-sm transition-all duration-500 group-hover:scale-105`}
-            >
-              PING
-            </h1>
+            {/* Floating Element 1: Compass Badge */}
+            <div className="absolute -top-4 -left-4 p-3 rounded-2xl glass-card border border-white/20 shadow-xl animate-float-reverse flex items-center gap-2 text-xs font-extrabold text-white">
+              <Compass className="w-5 h-5 text-amber-400" />
+              <span>Compass</span>
+            </div>
+
+            {/* Floating Element 2: Map Pin Badge */}
+            <div className="absolute top-1/3 -right-6 p-3 rounded-2xl glass-card border border-white/20 shadow-xl animate-float-slow flex items-center gap-2 text-xs font-extrabold text-white">
+              <MapPin className="w-5 h-5 text-rose-500 fill-rose-500/20" />
+              <span>Capital Sprint</span>
+            </div>
+
+            {/* Floating Element 3: Paper Plane */}
+            <div className="absolute -bottom-4 left-1/4 p-3 rounded-2xl glass-card border border-white/20 shadow-xl animate-float-reverse flex items-center gap-2 text-xs font-extrabold text-white">
+              <Navigation className="w-5 h-5 text-cyan-400" />
+              <span>Explore</span>
+            </div>
           </div>
         </div>
       </div>

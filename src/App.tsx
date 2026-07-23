@@ -1,23 +1,32 @@
 import { useState, useEffect } from 'react';
 import { BackgroundCanvas } from './components/BackgroundCanvas';
+import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
+import { GeographyHome } from './components/geography/GeographyHome';
+import { CasualCategoriesGrid } from './components/CasualCategoriesGrid';
 import { GameGrid } from './components/GameGrid';
 import { GameModal } from './components/GameModal';
-import { GeographyHome } from './components/geography/GeographyHome';
+import { FeatureBanner } from './components/FeatureBanner';
+import { Footer } from './components/Footer';
 import { GAMES_DATA } from './data/gamesData';
 import type { GameItem } from './data/gamesData';
 import { sounds } from './services/audio';
-import { Compass, Gamepad2 } from 'lucide-react';
 
 function App() {
-  // Primary Section Tab State
-  const [activeSection, setActiveSection] = useState<'geography' | 'casual'>('geography');
+  // Navigation Tab State: 'home' | 'geography' | 'casual'
+  const [activeTab, setActiveTab] = useState<'home' | 'geography' | 'casual'>('home');
 
-  // Theme state
+  // Live Search Input State
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  // Selected Category Filter State
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  // Theme State
   const [isDark, setIsDark] = useState<boolean>(() => {
     const saved = localStorage.getItem('miniarcade_theme');
     if (saved !== null) return saved === 'dark';
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return true; // Default to sleek dark theme
   });
 
   useEffect(() => {
@@ -32,6 +41,14 @@ function App() {
 
   const toggleTheme = () => {
     setIsDark((prev) => !prev);
+  };
+
+  // Mute Sound State
+  const [isMuted, setIsMuted] = useState<boolean>(sounds.getMuted());
+
+  const toggleMute = () => {
+    const nextMuted = sounds.toggleMute();
+    setIsMuted(nextMuted);
   };
 
   // Favorites state
@@ -58,81 +75,98 @@ function App() {
     }
   };
 
-  const handleRandomGame = () => {
-    const randomIndex = Math.floor(Math.random() * GAMES_DATA.length);
-    const randomGame = GAMES_DATA[randomIndex];
-    setActiveModalGame(randomGame);
-  };
+  // Filter casual games by search query and category
+  const filteredCasualGames = GAMES_DATA.filter((g) => {
+    const matchesSearch = searchQuery.trim() === '' ||
+      g.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      g.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = !selectedCategory || g.category.toLowerCase() === selectedCategory.toLowerCase();
+    return matchesSearch && matchesCategory;
+  });
 
   return (
-    <div className="relative min-h-screen flex flex-col selection:bg-[#6366F1]/20 selection:text-[#6366F1] pb-16">
-      {/* Dynamic Animated Particle Grid Canvas */}
+    <div className="relative min-h-screen flex flex-col selection:bg-[#6366F1]/20 selection:text-[#6366F1]">
+      {/* Dynamic Animated Canvas Backdrop */}
       <BackgroundCanvas isDark={isDark} />
 
-      {/* Main Content Area */}
+      {/* Top Navbar */}
+      <Navbar
+        activeTab={activeTab}
+        onSelectTab={(tab) => {
+          setActiveTab(tab);
+          setSelectedCategory(null);
+        }}
+        searchQuery={searchQuery}
+        onSearchChange={(q) => setSearchQuery(q)}
+        isDark={isDark}
+        onToggleTheme={toggleTheme}
+        isMuted={isMuted}
+        onToggleMute={toggleMute}
+      />
+
+      {/* Main Page Body Layout */}
       <main className="flex-grow z-10">
-        {/* Playful PIXEL PING Header Title & Quick Controls */}
-        <HeroSection
-          onExploreClick={() => {}}
-          onRandomClick={handleRandomGame}
-          onLaunchGame={handleLaunchGame}
-          isDark={isDark}
-          onToggleTheme={toggleTheme}
-        />
-
-        {/* Primary Platform Section Switcher Floating Capsule */}
-        <div className="max-w-lg mx-auto px-4 mb-8 relative z-20">
-          <div className="p-1.5 rounded-full glass-card border border-slate-200/80 dark:border-white/10 shadow-xl flex items-center justify-center gap-1.5 backdrop-blur-2xl">
-            <button
-              onClick={() => {
-                sounds.playPop();
-                setActiveSection('geography');
-              }}
-              className={`flex-1 py-3 px-5 rounded-full font-display font-extrabold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 btn-tactile ${
-                activeSection === 'geography'
-                  ? 'bg-gradient-to-r from-[#6366F1] to-[#10B981] text-white shadow-lg shadow-[#6366F1]/25 scale-[1.02]'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'
-              }`}
-            >
-              <Compass className="w-4 h-4" />
-              <span>Geography Games</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/20 font-black tracking-wider uppercase">
-                MAIN
-              </span>
-            </button>
-
-            <button
-              onClick={() => {
-                sounds.playPop();
-                setActiveSection('casual');
-              }}
-              className={`flex-1 py-3 px-5 rounded-full font-display font-extrabold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center gap-2 btn-tactile ${
-                activeSection === 'casual'
-                  ? 'bg-gradient-to-r from-[#6366F1] to-[#4F46E5] text-white shadow-lg shadow-[#6366F1]/25 scale-[1.02]'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'
-              }`}
-            >
-              <Gamepad2 className="w-4 h-4" />
-              <span>Casual Arcade</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Dynamic Section Content */}
-        {activeSection === 'geography' ? (
-          <GeographyHome />
-        ) : (
-          <GameGrid
-            games={GAMES_DATA}
-            favorites={favorites}
-            onToggleFavorite={toggleFavorite}
-            onPlayGame={handleLaunchGame}
-            onResetFilters={() => {}}
+        {/* Render Hero Banner only on Home or when search is empty */}
+        {activeTab === 'home' && !searchQuery && (
+          <HeroSection
+            onExploreGeography={() => {
+              setActiveTab('geography');
+              const el = document.getElementById('geography-games');
+              el?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            onExploreAllGames={() => {
+              setActiveTab('casual');
+              const el = document.getElementById('all-games-categories');
+              el?.scrollIntoView({ behavior: 'smooth' });
+            }}
           />
         )}
+
+        {/* 1. Geography Section (Shown on Home or Geography Tab) */}
+        {(activeTab === 'home' || activeTab === 'geography') && (
+          <GeographyHome
+            searchQuery={searchQuery}
+            onViewAllClick={() => setActiveTab('geography')}
+          />
+        )}
+
+        {/* 2. Casual Arcade & All Games Categories Section (Shown on Home or Casual Tab) */}
+        {(activeTab === 'home' || activeTab === 'casual') && (
+          <>
+            <CasualCategoriesGrid
+              onCategoryClick={(catId) => {
+                setSelectedCategory(catId);
+                setActiveTab('casual');
+              }}
+              onViewAllClick={() => setActiveTab('casual')}
+            />
+
+            <GameGrid
+              games={filteredCasualGames}
+              favorites={favorites}
+              onToggleFavorite={toggleFavorite}
+              onPlayGame={handleLaunchGame}
+              onResetFilters={() => {
+                setSearchQuery('');
+                setSelectedCategory(null);
+              }}
+            />
+          </>
+        )}
+
+        {/* 3. GeoPlay Feature Callout Banner */}
+        <FeatureBanner
+          onStartPlayingClick={() => {
+            setActiveTab('geography');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        />
       </main>
 
-      {/* Interactive Mini-Game Modal */}
+      {/* Footer */}
+      <Footer onSelectTab={(tab) => setActiveTab(tab)} />
+
+      {/* Casual Arcade Game Modal Overlay */}
       <GameModal game={activeModalGame} onClose={() => setActiveModalGame(null)} />
     </div>
   );
